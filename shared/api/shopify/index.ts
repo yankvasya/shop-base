@@ -1,0 +1,5 @@
+export { useShopifyClient } from './client'
+export { shopifyRequest } from './request'
+export { ShopifyApiError } from './errors'
+export { assertNoUserErrors } from './user-errors'
+export type { UserError } from './user-errors'
