@@ -22,6 +22,9 @@ logs
 # Test coverage
 coverage
 
+# Generated from the live Shopify schema — run `pnpm codegen` to produce it
+shared/types/storefront.generated.ts
+
 # Local env files
 .env
 .env.*

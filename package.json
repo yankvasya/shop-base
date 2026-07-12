@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "codegen": "node --env-file-if-exists=.env node_modules/.bin/graphql-codegen --config codegen.ts"
+    "codegen": "node --env-file-if-exists=.env node_modules/@graphql-codegen/cli/esm/bin.js --config codegen.ts"
   },
   "dependencies": {
     "@lucide/vue": "^1.24.0",
