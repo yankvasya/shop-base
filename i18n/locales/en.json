@@ -1,0 +1,51 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "empty": "Nothing here yet"
+  },
+  "nav": {
+    "catalog": "Catalog",
+    "search": "Search",
+    "cart": "Cart"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "sortBy": "Sort by",
+    "sort": {
+      "relevance": "Relevance",
+      "bestSelling": "Best selling",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "newest": "Newest"
+    },
+    "filters": "Filters",
+    "inStockOnly": "In stock only",
+    "clearFilters": "Clear filters",
+    "noResults": "No products found",
+    "loadMore": "Load more"
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "adding": "Adding...",
+    "added": "Added to cart",
+    "outOfStock": "Out of stock",
+    "selectOptions": "Select options",
+    "quantity": "Quantity",
+    "description": "Description"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Qty",
+    "itemCount": "0 items | 1 item | {count} items"
+  },
+  "search": {
+    "placeholder": "Search products...",
+    "noResults": "No results for \"{query}\""
+  }
+}

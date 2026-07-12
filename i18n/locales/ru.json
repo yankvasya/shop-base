@@ -1,0 +1,51 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Что-то пошло не так",
+    "retry": "Повторить",
+    "empty": "Здесь пока пусто"
+  },
+  "nav": {
+    "catalog": "Каталог",
+    "search": "Поиск",
+    "cart": "Корзина"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "sortBy": "Сортировка",
+    "sort": {
+      "relevance": "По релевантности",
+      "bestSelling": "Популярные",
+      "priceAsc": "Сначала дешевле",
+      "priceDesc": "Сначала дороже",
+      "newest": "Сначала новые"
+    },
+    "filters": "Фильтры",
+    "inStockOnly": "Только в наличии",
+    "clearFilters": "Сбросить фильтры",
+    "noResults": "Товары не найдены",
+    "loadMore": "Показать ещё"
+  },
+  "product": {
+    "addToCart": "В корзину",
+    "adding": "Добавляем...",
+    "added": "Добавлено в корзину",
+    "outOfStock": "Нет в наличии",
+    "selectOptions": "Выберите вариант",
+    "quantity": "Количество",
+    "description": "Описание"
+  },
+  "cart": {
+    "title": "Корзина",
+    "empty": "Корзина пуста",
+    "subtotal": "Промежуточный итог",
+    "checkout": "Оформить заказ",
+    "remove": "Удалить",
+    "quantity": "Кол-во",
+    "itemCount": "0 товаров | 1 товар | {count} товара(ов)"
+  },
+  "search": {
+    "placeholder": "Поиск товаров...",
+    "noResults": "Ничего не найдено по запросу «{query}»"
+  }
+}
