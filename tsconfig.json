@@ -1,0 +1,32 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  // `paths` here are redundant with the `alias` block in nuxt.config.ts
+  // (which is what Nuxt/Vite actually use at build/runtime and what gets
+  // merged into .nuxt/tsconfig.*.json for real type-checking) — they're
+  // declared again at this level purely so static tools that read this
+  // file directly (e.g. the shadcn-vue CLI) can resolve FSD layer aliases.
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["./shared/*"],
+      "@entities/*": ["./entities/*"],
+      "@features/*": ["./features/*"],
+      "@widgets/*": ["./widgets/*"]
+    }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./.nuxt/tsconfig.app.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.server.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.shared.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.node.json"
+    }
+  ]
+}

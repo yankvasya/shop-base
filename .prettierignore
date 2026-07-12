@@ -1,0 +1,14 @@
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+node_modules
+pnpm-lock.yaml
+shared/types/storefront.generated.ts
+coverage
+
+# Vendored shadcn-vue components — left as close to upstream registry
+# output as possible (double quotes, no semicolons removed, etc.)
+shared/ui
