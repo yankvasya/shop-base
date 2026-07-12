@@ -118,7 +118,8 @@ async call is wrapped in `useAsyncData` with explicit loading/error handling.
 ## What's implemented
 
 - Product catalog with SSR, cursor-based pagination (`useAsyncData` + "load more"),
-  in-stock filter and sort — all synced to the URL query string
+  filters (in-stock, product type, tag, price range) and sort — all synced to the
+  URL query string
 - Product detail page: clickable image gallery, option (color/size) selection,
   availability-aware add-to-cart
 - Cart: Pinia store, cart id persisted to `localStorage` via VueUse, optimistic UI
@@ -132,16 +133,13 @@ async call is wrapped in `useAsyncData` with explicit loading/error handling.
   boundary before it reaches application code
 - Loading/error states on every async call (catalog, PDP, search)
 - Tests: `entities/product` (Zod schemas, variant selection), `entities/cart`
-  (Pinia store — optimistic add, rollback on failure, quantity/remove), and the
-  `add-to-cart` feature composable
+  (Pinia store — optimistic add, rollback on failure, quantity/remove), the
+  `add-to-cart` feature composable, and the filter query-string builder
 
 ## Not yet implemented
 
 - shadcn-vue components were installed as-is (unstyled beyond the default theme) —
   visual customization is a follow-up
-- Product filters are limited to "in stock only"; Shopify's `products(query:)`
-  search syntax supports a lot more (product type, tags, price range) and can be
-  extended in `features/product-filter`
 - No order history / account area (would need the separate Shopify Customer
   Account API / OAuth flow — out of scope for this MVP, see `entities/order`)
 
