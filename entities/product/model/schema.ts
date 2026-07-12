@@ -87,3 +87,12 @@ export type ProductConnection = z.infer<typeof productConnectionSchema>
 
 export const productSortKeys = ['RELEVANCE', 'BEST_SELLING', 'PRICE', 'CREATED_AT', 'TITLE'] as const
 export type ProductSortKey = (typeof productSortKeys)[number]
+
+export const productFilterOptionsSchema = z.object({
+  // Shopify includes an empty string in `productTypes` for products that
+  // don't have a type set — filter it out, it's not a selectable filter.
+  productTypes: z.object({ nodes: z.array(z.string()) }).transform((c) => c.nodes.filter(Boolean)),
+  productTags: z.object({ nodes: z.array(z.string()) }).transform((c) => c.nodes.filter(Boolean)),
+})
+
+export type ProductFilterOptions = z.infer<typeof productFilterOptionsSchema>

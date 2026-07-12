@@ -3,11 +3,18 @@ import { shopifyRequest } from '@shared/api/shopify'
 import {
   productSchema,
   productConnectionSchema,
+  productFilterOptionsSchema,
   type Product,
   type ProductConnection,
+  type ProductFilterOptions,
   type ProductSortKey,
 } from '../model/schema'
-import { PRODUCT_BY_HANDLE_QUERY, PRODUCT_LIST_QUERY, PRODUCT_SEARCH_QUERY } from './queries'
+import {
+  PRODUCT_BY_HANDLE_QUERY,
+  PRODUCT_LIST_QUERY,
+  PRODUCT_FILTER_OPTIONS_QUERY,
+  PRODUCT_SEARCH_QUERY,
+} from './queries'
 
 export interface GetProductsParams {
   first?: number
@@ -42,6 +49,10 @@ export async function getProductByHandle(handle: string): Promise<Product | null
   )
 
   return data.product
+}
+
+export async function getProductFilterOptions(first = 250): Promise<ProductFilterOptions> {
+  return shopifyRequest(PRODUCT_FILTER_OPTIONS_QUERY, productFilterOptionsSchema, { first })
 }
 
 export interface SearchProductsParams {

@@ -1,31 +1,77 @@
 import { computed } from 'vue'
+import { buildProductFilterQuery } from '../lib/build-filter-query'
 
-/**
- * Reads/writes filter state from the URL query. Currently a single
- * "in stock only" toggle, translated into Shopify's Storefront search
- * syntax (https://shopify.dev/docs/api/storefront/reference/products/products)
- * — more filters (product type, tags) can be added the same way.
- */
+function queryParam(value: unknown): string {
+  return typeof value === 'string' ? value : ''
+}
+
+/** Reads/writes filter state from the URL query. */
 export function useProductFilter() {
   const route = useRoute()
   const router = useRouter()
 
   const inStockOnly = computed(() => route.query.inStock === 'true')
-  const hasActiveFilters = computed(() => inStockOnly.value)
+  const productType = computed(() => queryParam(route.query.type))
+  const tag = computed(() => queryParam(route.query.tag))
+  const minPrice = computed(() => queryParam(route.query.minPrice))
+  const maxPrice = computed(() => queryParam(route.query.maxPrice))
 
-  const filterQuery = computed<string | undefined>(() =>
-    inStockOnly.value ? 'available_for_sale:true' : undefined,
+  const hasActiveFilters = computed(
+    () => inStockOnly.value || !!productType.value || !!tag.value || !!minPrice.value || !!maxPrice.value,
   )
 
+  const filterQuery = computed<string | undefined>(() =>
+    buildProductFilterQuery({
+      inStockOnly: inStockOnly.value,
+      productType: productType.value,
+      tag: tag.value,
+      minPrice: minPrice.value,
+      maxPrice: maxPrice.value,
+    }),
+  )
+
+  function updateFilters(patch: Record<string, string | undefined>) {
+    router.push({ query: { ...route.query, ...patch, after: undefined } })
+  }
+
   function setInStockOnly(value: boolean) {
-    router.push({
-      query: { ...route.query, inStock: value ? 'true' : undefined, after: undefined },
-    })
+    updateFilters({ inStock: value ? 'true' : undefined })
+  }
+
+  function setProductType(value: string) {
+    updateFilters({ type: value || undefined })
+  }
+
+  function setTag(value: string) {
+    updateFilters({ tag: value || undefined })
+  }
+
+  function setPriceRange(min: string, max: string) {
+    updateFilters({ minPrice: min || undefined, maxPrice: max || undefined })
   }
 
   function clearFilters() {
-    router.push({ query: { ...route.query, inStock: undefined, after: undefined } })
+    updateFilters({
+      inStock: undefined,
+      type: undefined,
+      tag: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
+    })
   }
 
-  return { inStockOnly, hasActiveFilters, filterQuery, setInStockOnly, clearFilters }
+  return {
+    inStockOnly,
+    productType,
+    tag,
+    minPrice,
+    maxPrice,
+    hasActiveFilters,
+    filterQuery,
+    setInStockOnly,
+    setProductType,
+    setTag,
+    setPriceRange,
+    clearFilters,
+  }
 }

@@ -117,6 +117,17 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
   }
 `
 
+export const PRODUCT_FILTER_OPTIONS_QUERY = /* GraphQL */ `
+  query ProductFilterOptions($first: Int!) {
+    productTypes(first: $first) {
+      nodes
+    }
+    productTags(first: $first) {
+      nodes
+    }
+  }
+`
+
 export const PRODUCT_SEARCH_QUERY = /* GraphQL */ `
   ${PRODUCT_CARD_FRAGMENT}
   query ProductSearch($query: String!, $first: Int, $after: String) {

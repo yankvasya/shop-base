@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { getProducts, type ProductCard } from '@entities/product'
 import { useProductSort, SortSelect } from '@features/product-sort'
-import { useProductFilter, InStockFilter } from '@features/product-filter'
+import { useProductFilter, ProductFilters } from '@features/product-filter'
 
 const { sortParams } = useProductSort()
 const { filterQuery } = useProductFilter()
@@ -55,11 +55,10 @@ async function loadMore() {
   <div class="mx-auto max-w-6xl px-4 py-6">
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
       <h1 class="text-2xl font-bold">{{ $t('catalog.title') }}</h1>
-      <div class="flex items-center gap-4">
-        <InStockFilter />
-        <SortSelect />
-      </div>
+      <SortSelect />
     </div>
+
+    <ProductFilters class="mb-6" />
 
     <ProductGrid
       :products="products"

@@ -22,6 +22,12 @@
     },
     "filters": "Фильтры",
     "inStockOnly": "Только в наличии",
+    "productType": "Тип товара",
+    "allTypes": "Все типы",
+    "tag": "Тег",
+    "allTags": "Все теги",
+    "minPrice": "Цена от",
+    "maxPrice": "Цена до",
     "clearFilters": "Сбросить фильтры",
     "noResults": "Товары не найдены",
     "loadMore": "Показать ещё"

@@ -22,6 +22,12 @@
     },
     "filters": "Filters",
     "inStockOnly": "In stock only",
+    "productType": "Product type",
+    "allTypes": "All types",
+    "tag": "Tag",
+    "allTags": "All tags",
+    "minPrice": "Min price",
+    "maxPrice": "Max price",
     "clearFilters": "Clear filters",
     "noResults": "No products found",
     "loadMore": "Load more"
