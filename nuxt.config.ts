@@ -68,7 +68,7 @@ export default defineNuxtConfig({
       shopify: {
         storeDomain: '',
         storefrontToken: '',
-        apiVersion: '2025-01',
+        apiVersion: '2025-10',
       },
     },
   },

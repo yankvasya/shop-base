@@ -20,7 +20,6 @@ export const productVariantSchema = z.object({
   id: z.string(),
   title: z.string(),
   availableForSale: z.boolean(),
-  quantityAvailable: z.number().nullable().optional(),
   selectedOptions: z.array(selectedOptionSchema),
   price: moneySchema,
   compareAtPrice: moneySchema.nullable(),

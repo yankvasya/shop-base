@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const storeDomain = process.env.NUXT_PUBLIC_SHOPIFY_STORE_DOMAIN
 const storefrontToken = process.env.NUXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN
-const apiVersion = process.env.NUXT_PUBLIC_SHOPIFY_API_VERSION ?? '2025-01'
+const apiVersion = process.env.NUXT_PUBLIC_SHOPIFY_API_VERSION ?? '2025-10'
 
 if (!storeDomain || !storefrontToken) {
   throw new Error(

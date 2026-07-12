@@ -79,7 +79,7 @@ barrel — consumers import from `@entities/cart`, never from
    ```
    NUXT_PUBLIC_SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
    NUXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN=your-storefront-api-token
-   NUXT_PUBLIC_SHOPIFY_API_VERSION=2025-01
+   NUXT_PUBLIC_SHOPIFY_API_VERSION=2025-10
    ```
 
    The Storefront API token is a **public/publishable** token — it's meant to be

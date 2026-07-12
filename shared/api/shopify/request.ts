@@ -17,7 +17,12 @@ export async function shopifyRequest<TSchema extends z.ZodType>(
   const { data, errors } = await client.request(document, { variables })
 
   if (errors) {
-    throw new ShopifyApiError(errors.message ?? 'Shopify Storefront API request failed', {
+    const detail = errors.graphQLErrors?.map((e) => e.message).join('; ')
+    const message = detail || errors.message || 'Shopify Storefront API request failed'
+    if (import.meta.dev) {
+      console.error('[shopify]', message, errors.graphQLErrors ?? errors)
+    }
+    throw new ShopifyApiError(message, {
       graphQLErrors: errors.graphQLErrors,
       networkStatusCode: errors.networkStatusCode,
     })
