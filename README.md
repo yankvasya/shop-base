@@ -102,6 +102,22 @@ Without a `.env`, the app still boots — every page fetch fails gracefully into
 error/retry state built into `ProductGrid` and the product/search pages, since every
 async call is wrapped in `useAsyncData` with explicit loading/error handling.
 
+## Deployment
+
+Deployed as a standard Nuxt SSR app — no framework-specific glue code needed. On **Vercel**:
+
+1. Import the GitHub repo as a new Vercel project. Vercel detects Nuxt automatically and
+   sets the right build command/output — no `vercel.json` or nitro preset override needed.
+2. In the project's **Environment Variables** settings, add the same three variables from
+   `.env.example` (`NUXT_PUBLIC_SHOPIFY_STORE_DOMAIN`, `NUXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN`,
+   `NUXT_PUBLIC_SHOPIFY_API_VERSION`).
+3. Deploy. `@nuxt/image`'s `cdn.shopify.com` domain allowlist (`nuxt.config.ts` → `image.domains`)
+   already covers Shopify-hosted product images.
+
+Other Nitro-supported targets (Netlify, Cloudflare Pages, a plain Node server via
+`pnpm build && node .output/server/index.mjs`) work the same way — set the same three env
+vars, no other platform-specific config required.
+
 ## Scripts
 
 | Script                                       | What it does                                                                          |
