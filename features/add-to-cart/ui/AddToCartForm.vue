@@ -17,28 +17,37 @@ const {
   selectOption,
   addToCart,
 } = useAddToCart(props.product)
+
+// Shopify's convention for products without real variants: a single
+// "Title" option with the single value "Default Title" — not worth
+// showing a selector for.
+const hasSelectableOptions = computed(
+  () => !(props.product.options.length === 1 && props.product.options[0].values[0] === 'Default Title'),
+)
 </script>
 
 <template>
   <form class="flex flex-col gap-4" @submit.prevent="addToCart()">
-    <div v-for="option in product.options" :key="option.name" class="flex flex-col gap-1.5">
-      <label :for="`option-${option.name}`" class="text-sm font-medium">{{ option.name }}</label>
-      <Select
-        :model-value="selectedOptions[option.name]"
-        @update:model-value="(value) => selectOption(option.name, String(value))"
-      >
-        <SelectTrigger :id="`option-${option.name}`">
-          <SelectValue :placeholder="$t('product.selectOptions')" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem v-for="value in option.values" :key="value" :value="value">
-            {{ value }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <template v-if="hasSelectableOptions">
+      <div v-for="option in product.options" :key="option.name" class="flex flex-col gap-1.5">
+        <label :for="`option-${option.name}`" class="text-sm font-medium">{{ option.name }}</label>
+        <Select
+          :model-value="selectedOptions[option.name]"
+          @update:model-value="(value) => selectOption(option.name, String(value))"
+        >
+          <SelectTrigger :id="`option-${option.name}`">
+            <SelectValue :placeholder="$t('product.selectOptions')" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="value in option.values" :key="value" :value="value">
+              {{ value }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </template>
 
-    <p v-if="selectedVariant" class="text-lg font-semibold">
+    <p v-if="selectedVariant" class="text-lg font-semibold text-primary">
       {{ formatMoney(selectedVariant.price) }}
     </p>
 

@@ -52,13 +52,13 @@ async function loadMore() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl px-4 py-6">
-    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-      <h1 class="text-2xl font-bold">{{ $t('catalog.title') }}</h1>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <h1 class="text-3xl font-semibold tracking-tight">{{ $t('catalog.title') }}</h1>
       <SortSelect />
     </div>
 
-    <ProductFilters class="mb-6" />
+    <ProductFilters class="mb-8" />
 
     <ProductGrid
       :products="products"

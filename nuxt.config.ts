@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@nuxtjs/i18n', '@nuxt/image', '@nuxt/eslint'],
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@nuxtjs/i18n', '@nuxt/image', '@nuxt/eslint', '@nuxt/fonts'],
 
   css: ['~/assets/css/main.css'],
 
@@ -47,6 +47,10 @@ export default defineNuxtConfig({
 
   image: {
     domains: ['cdn.shopify.com'],
+  },
+
+  fonts: {
+    families: [{ name: 'Inter', provider: 'google', weights: [400, 500, 600, 700] }],
   },
 
   i18n: {
