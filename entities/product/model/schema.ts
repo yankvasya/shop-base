@@ -1,5 +1,11 @@
 import { z } from 'zod'
-import { moneySchema, imageSchema, selectedOptionSchema } from '@shared/types/common'
+import {
+  moneySchema,
+  imageSchema,
+  selectedOptionSchema,
+  pageInfoSchema,
+  edgeList,
+} from '@shared/types/common'
 
 /**
  * Schemas below validate the Storefront API response shape directly
@@ -9,10 +15,6 @@ import { moneySchema, imageSchema, selectedOptionSchema } from '@shared/types/co
  * responses: a malformed/unexpected payload fails `.parse()` here
  * instead of producing `undefined`s deep in a component.
  */
-
-function edgeList<T extends z.ZodTypeAny>(node: T) {
-  return z.object({ edges: z.array(z.object({ node })) }).transform((c) => c.edges.map((e) => e.node))
-}
 
 export const productImageSchema = imageSchema
 
@@ -58,13 +60,6 @@ export const productCardSchema = z.object({
   availableForSale: z.boolean(),
   priceRange: priceRangeSchema,
   images: edgeList(productImageSchema.pick({ url: true, altText: true, width: true, height: true })),
-})
-
-export const pageInfoSchema = z.object({
-  hasNextPage: z.boolean(),
-  hasPreviousPage: z.boolean(),
-  startCursor: z.string().nullable(),
-  endCursor: z.string().nullable(),
 })
 
 export const productConnectionSchema = z
