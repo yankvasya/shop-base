@@ -1,18 +1,47 @@
 import { z } from 'zod'
-import { moneySchema } from '@shared/types/common'
+import { moneySchema, imageSchema, pageInfoSchema, edgeList } from '@shared/types/common'
 
 /**
- * Checkout itself is fully delegated to Shopify's hosted checkout — this
- * app never processes payments. This minimal shape is what's available
- * once the customer lands back on a confirmation route after paying;
- * fetching full order history would require the Shopify Customer
- * Account API (separate OAuth flow), which is out of scope for the MVP.
+ * Orders are fetched through the Customer Account API once a customer is
+ * logged in (see entities/order/api and server/api/account/orders).
+ * Field names verified against Shopify's GraphQL reference
+ * (shopify.dev/docs/api/customer/latest/objects/Order, .../LineItem) —
+ * not yet exercised against a live store; see entities/customer's schema
+ * comment for why.
  */
-export const orderSummarySchema = z.object({
-  id: z.string(),
-  orderNumber: z.number(),
-  totalPrice: moneySchema,
-  statusUrl: z.string(),
+
+export const orderLineItemSchema = z.object({
+  name: z.string(),
+  quantity: z.number(),
+  totalPrice: moneySchema.nullable(),
+  image: imageSchema.nullable(),
 })
 
+export const orderSummarySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  number: z.number(),
+  processedAt: z.string(),
+  financialStatus: z.string().nullable(),
+  fulfillmentStatus: z.string(),
+  totalPrice: moneySchema,
+})
+
+export const orderDetailSchema = orderSummarySchema.extend({
+  lineItems: edgeList(orderLineItemSchema),
+})
+
+export const orderConnectionSchema = z
+  .object({
+    edges: z.array(z.object({ node: orderSummarySchema, cursor: z.string() })),
+    pageInfo: pageInfoSchema,
+  })
+  .transform((c) => ({
+    nodes: c.edges.map((e) => e.node),
+    pageInfo: c.pageInfo,
+  }))
+
+export type OrderLineItem = z.infer<typeof orderLineItemSchema>
 export type OrderSummary = z.infer<typeof orderSummarySchema>
+export type OrderDetail = z.infer<typeof orderDetailSchema>
+export type OrderConnection = z.infer<typeof orderConnectionSchema>

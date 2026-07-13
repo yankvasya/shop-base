@@ -53,5 +53,21 @@
   "search": {
     "placeholder": "Поиск товаров...",
     "noResults": "Ничего не найдено по запросу «{query}»"
+  },
+  "account": {
+    "login": "Войти",
+    "logout": "Выйти",
+    "myAccount": "Личный кабинет",
+    "profile": "Профиль",
+    "orders": "Заказы",
+    "noOrders": "У вас пока нет заказов",
+    "orderNumber": "Заказ {number}",
+    "orderDate": "Оформлен {date}",
+    "orderTotal": "Итого",
+    "orderStatus": "Статус",
+    "viewOrder": "Посмотреть заказ",
+    "backToOrders": "К списку заказов",
+    "loadingProfile": "Загружаем ваш аккаунт...",
+    "loginRequired": "Войдите, чтобы увидеть эту страницу"
   }
 }

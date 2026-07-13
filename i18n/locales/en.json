@@ -53,5 +53,21 @@
   "search": {
     "placeholder": "Search products...",
     "noResults": "No results for \"{query}\""
+  },
+  "account": {
+    "login": "Log in",
+    "logout": "Log out",
+    "myAccount": "My account",
+    "profile": "Profile",
+    "orders": "Orders",
+    "noOrders": "You haven't placed any orders yet",
+    "orderNumber": "Order {number}",
+    "orderDate": "Placed on {date}",
+    "orderTotal": "Total",
+    "orderStatus": "Status",
+    "viewOrder": "View order",
+    "backToOrders": "Back to orders",
+    "loadingProfile": "Loading your account...",
+    "loginRequired": "Log in to view this page"
   }
 }
