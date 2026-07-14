@@ -4,6 +4,9 @@ import { getProducts, type ProductCard } from '@entities/product'
 import { useProductSort, SortSelect } from '@features/product-sort'
 import { useProductFilter, ProductFilters } from '@features/product-filter'
 
+const { t } = useI18n()
+useSeoMeta({ title: () => t('catalog.title'), description: () => t('seo.catalogDescription') })
+
 const { sortParams } = useProductSort()
 const { filterQuery } = useProductFilter()
 

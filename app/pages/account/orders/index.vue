@@ -4,8 +4,10 @@ import { formatMoney } from '@shared/lib'
 
 definePageMeta({ middleware: 'auth' })
 
+const { t, locale } = useI18n()
+useSeoMeta({ title: () => t('account.orders'), robots: 'noindex, nofollow' })
+
 const { data, pending, error } = await useFetch('/api/account/orders', { key: 'account-orders' })
-const { locale } = useI18n()
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(locale.value)

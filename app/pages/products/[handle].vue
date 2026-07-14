@@ -24,6 +24,45 @@ if (!pending.value && !error.value && !product.value) {
 }
 
 const selectedImageIndex = ref(0)
+
+const metaDescription = computed(() => {
+  const text = product.value?.description ?? ''
+  return text.length > 160 ? `${text.slice(0, 157)}...` : text
+})
+
+useSeoMeta({
+  title: () => product.value?.title,
+  description: metaDescription,
+  ogTitle: () => product.value?.title,
+  ogDescription: metaDescription,
+  ogImage: () => product.value?.images[0]?.url,
+  ogType: 'website',
+})
+
+useHead(() => ({
+  script: product.value
+    ? [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.value.title,
+            description: product.value.description,
+            image: product.value.images.map((image) => image.url),
+            offers: {
+              '@type': 'Offer',
+              priceCurrency: product.value.priceRange.minVariantPrice.currencyCode,
+              price: product.value.priceRange.minVariantPrice.amount,
+              availability: product.value.availableForSale
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            },
+          }),
+        },
+      ]
+    : [],
+}))
 </script>
 
 <template>

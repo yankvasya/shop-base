@@ -54,6 +54,11 @@
     "placeholder": "Search products...",
     "noResults": "No results for \"{query}\""
   },
+  "seo": {
+    "defaultDescription": "A modern storefront built on the Shopify Storefront API — browse the catalog, filter and search products, and check out securely.",
+    "catalogDescription": "Browse the full product catalog — filter by type, tag, price, and availability.",
+    "searchDescription": "Search the product catalog by name."
+  },
   "account": {
     "login": "Log in",
     "logout": "Log out",

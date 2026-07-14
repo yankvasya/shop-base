@@ -54,6 +54,10 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    // Used to build absolute hreflang/canonical URLs (useLocaleHead). Same
+    // value as runtimeConfig.public.siteUrl below, read directly from env
+    // here since this module option is resolved at startup, not per-request.
+    baseUrl: process.env.NUXT_PUBLIC_SITE_URL,
     locales: [
       { code: 'en', language: 'en-US', file: 'en.json', name: 'English' },
       { code: 'ru', language: 'ru-RU', file: 'ru.json', name: 'Русский' },
@@ -87,6 +91,15 @@ export default defineNuxtConfig({
       // Absolute site URL, used to build the OAuth redirect_uri — must
       // exactly match a callback URL registered with the Customer Account API.
       siteUrl: '',
+    },
+  },
+
+  app: {
+    head: {
+      // A function here doesn't survive nuxt.config's serialization into
+      // the generated app plugin (silently dropped, no error) — has to be
+      // the string form.
+      titleTemplate: '%s · ShopBase',
     },
   },
 

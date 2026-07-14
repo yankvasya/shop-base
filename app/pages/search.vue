@@ -2,6 +2,9 @@
 import { computed } from 'vue'
 import { searchProducts } from '@entities/product'
 
+const { t } = useI18n()
+useSeoMeta({ title: () => t('nav.search'), description: () => t('seo.searchDescription') })
+
 const route = useRoute()
 const query = computed(() => (typeof route.query.q === 'string' ? route.query.q : ''))
 
