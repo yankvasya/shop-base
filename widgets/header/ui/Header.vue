@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@shared/ui/button'
 import { SearchBox } from '@features/product-search'
+import { AuthMenu } from '@features/customer-auth'
 
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
@@ -26,6 +27,7 @@ const availableLocales = computed(() =>
           <NuxtLink :to="switchLocalePath(loc.code)">{{ loc.code.toUpperCase() }}</NuxtLink>
         </Button>
 
+        <AuthMenu />
         <CartDrawer />
       </div>
     </div>

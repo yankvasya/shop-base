@@ -68,12 +68,25 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Server-only — never exposed to the client. The Customer Account API
+    // uses a confidential client (we have a real backend to hold a secret),
+    // so the client secret lives here, not under `public`.
+    shopifyCustomerAccount: {
+      clientId: '',
+      clientSecret: '',
+    },
+    session: {
+      password: '',
+    },
     public: {
       shopify: {
         storeDomain: '',
         storefrontToken: '',
         apiVersion: '2025-10',
       },
+      // Absolute site URL, used to build the OAuth redirect_uri — must
+      // exactly match a callback URL registered with the Customer Account API.
+      siteUrl: '',
     },
   },
 

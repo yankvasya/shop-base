@@ -1,9 +1,5 @@
 import { z } from 'zod'
-import { moneySchema, imageSchema } from '@shared/types/common'
-
-function edgeList<T extends z.ZodTypeAny>(node: T) {
-  return z.object({ edges: z.array(z.object({ node })) }).transform((c) => c.edges.map((e) => e.node))
-}
+import { moneySchema, imageSchema, edgeList } from '@shared/types/common'
 
 export const cartMerchandiseSchema = z.object({
   id: z.string(),

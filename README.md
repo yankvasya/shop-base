@@ -23,14 +23,21 @@ app/         Nuxt's own directory: app.vue, plugins, middleware, layouts, pages.
              This is the FSD "app" layer (init, providers, routing) — Nuxt requires
              pages/ to live here for file-based routing, so it's nested rather than
              top-level, unlike the other FSD layers below.
+server/      Nitro server routes — currently just the Customer Account API's OAuth
+             flow and the account/orders endpoints it backs. Everything else in this
+             app talks to Shopify's Storefront API directly (client-side/SSR, no
+             server route needed); this is the one integration that has to be
+             server-only, since it holds a confidential client secret and session.
 widgets/     Large independent UI blocks: Header, ProductGrid, CartDrawer, Footer.
 features/    User scenarios: add-to-cart, product-filter, product-sort, product-search,
-             checkout-form.
-entities/    Business entities (product, cart, order) — each owns its types, Zod
-             schemas, GraphQL queries/mutations, and API functions. Components NEVER
-             call the Storefront API directly; they always go through entities/*/api.
+             checkout-form, customer-auth.
+entities/    Business entities (product, cart, order, customer) — each owns its types,
+             Zod schemas, GraphQL queries/mutations, and API functions. Components
+             NEVER call the Storefront/Customer Account APIs directly; they always go
+             through entities/*/api.
 shared/      UI kit (shared/ui, vendored shadcn-vue components), the Shopify API
-             client (shared/api/shopify), generic utilities, and common types.
+             clients (shared/api/shopify, shared/api/shopify-customer), generic
+             utilities, and common types.
 ```
 
 `widgets/`, `features/`, `entities/`, and `shared/` live at the **project root**, as
@@ -118,6 +125,48 @@ Other Nitro-supported targets (Netlify, Cloudflare Pages, a plain Node server vi
 `pnpm build && node .output/server/index.mjs`) work the same way — set the same three env
 vars, no other platform-specific config required.
 
+## Customer accounts (order history)
+
+Logging in and viewing order history goes through Shopify's **Customer Account API** —
+a separate OAuth 2.0 flow from the Storefront API, with its own credentials. Shopify
+requires an **HTTPS** callback URL (no `localhost`/`http`), so this needs a deployed
+URL (or a tunnel like ngrok) before you can test it — it won't work against plain
+`pnpm dev` on its own.
+
+**Setup, in the Shopify admin:**
+
+1. **Settings → Customer accounts** → enable "Customer accounts"
+2. **Sales channels → Headless** → your storefront → **Customer Account API settings**
+   → client type **Confidential client** (this app has a real Nitro server, so it can
+   hold a client secret — more secure than the public/PKCE flow meant for pure SPAs)
+3. Register the **callback URL**: `<NUXT_PUBLIC_SITE_URL>/api/auth/callback`
+4. Copy the **client ID** and **client secret** from the Credentials section
+
+**Env vars** (see `.env.example`):
+
+```
+NUXT_PUBLIC_SITE_URL=https://your-deployed-domain.example.com
+SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID=...
+SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET=...
+NUXT_SESSION_PASSWORD=...   # 32+ random chars, e.g. `openssl rand -base64 32`
+```
+
+**How it works:** `server/api/auth/login` redirects to Shopify's authorization
+endpoint (discovered from the shop's `.well-known/openid-configuration`, not
+hardcoded); `server/api/auth/callback` exchanges the code for tokens and stores them
+in a sealed httpOnly session cookie (`server/utils/customer-session.ts`, via h3's
+`useSession`) — the tokens never reach client-side JS. `entities/customer` and
+`entities/order` call the Customer Account API's GraphQL endpoint (also discovered,
+from `.well-known/customer-account-api`) using that session's access token, proxied
+through `server/api/account/*` routes.
+
+**Caveat:** the OAuth mechanics (discovery, token exchange/refresh, session handling)
+are implemented against Shopify's documented endpoint behavior, but the `Customer`/
+`Order`/`LineItem` field selections in `entities/customer` and `entities/order`
+haven't been exercised against a live store yet — that needs the setup above done
+first. Expect the same kind of small fixes we hit getting the Storefront API right
+(wrong field name, unsupported argument) on the first real login.
+
 ## Scripts
 
 | Script                                       | What it does                                                                          |
@@ -144,6 +193,8 @@ vars, no other platform-specific config required.
 - Checkout: redirects to Shopify's hosted checkout (`cart.checkoutUrl`) — this app
   never touches payment data
 - Search page (Storefront `search` query)
+- Customer login (Customer Account API, OAuth 2.0) and order history at `/account` —
+  see the "Customer accounts" section above for setup and its current caveat
 - i18n: English + Russian (`i18n/locales/`), locale-prefixed routes
 - Every Storefront API response is validated with Zod at the `shared/api/shopify`
   boundary before it reaches application code
@@ -156,8 +207,9 @@ vars, no other platform-specific config required.
 
 - shadcn-vue components were installed as-is (unstyled beyond the default theme) —
   visual customization is a follow-up
-- No order history / account area (would need the separate Shopify Customer
-  Account API / OAuth flow — out of scope for this MVP, see `entities/order`)
+- Customer profile editing / address book (read-only profile + order history only)
+- Order detail lookup (`order(id:)`) is unverified against the live schema — see the
+  "Customer accounts" caveat above
 
 ## Known environment quirk
 
