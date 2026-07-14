@@ -21,14 +21,14 @@ const emit = defineEmits<{ loadMore: []; retry: [] }>()
       <Button variant="outline" size="sm" @click="emit('retry')">{{ $t('common.retry') }}</Button>
     </div>
 
-    <div v-else-if="isLoading" class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-      <Skeleton v-for="i in 8" :key="i" class="aspect-square w-full" />
+    <div v-else-if="isLoading" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+      <Skeleton v-for="i in 8" :key="i" class="aspect-square w-full rounded-lg" />
     </div>
 
     <p v-else-if="products.length === 0" class="text-muted-foreground">{{ $t('catalog.noResults') }}</p>
 
     <template v-else>
-      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
         <ProductCard v-for="product in products" :key="product.id" :product="product" />
       </div>
 

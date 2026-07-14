@@ -64,7 +64,7 @@ async function removeLine(lineId: string) {
             width="72"
             height="72"
             loading="lazy"
-            class="h-18 w-18 rounded-md object-cover"
+            class="h-18 w-18 rounded-lg object-cover"
           />
           <div class="flex flex-1 flex-col gap-1">
             <p class="text-sm font-medium">{{ line.merchandise.product.title }}</p>
@@ -110,7 +110,9 @@ async function removeLine(lineId: string) {
       <SheetFooter v-if="!isEmpty" class="flex-col gap-3 border-t pt-4">
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <span>{{ $t('cart.subtotal') }}</span>
-          <span v-if="subtotal">{{ formatMoney(subtotal) }}</span>
+          <span v-if="subtotal" class="text-base font-semibold text-primary">{{
+            formatMoney(subtotal)
+          }}</span>
         </div>
         <CheckoutButton />
       </SheetFooter>

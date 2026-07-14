@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { getProductByHandle } from '@entities/product'
 import { AddToCartForm } from '@features/add-to-cart'
-import { formatMoney } from '@shared/lib'
 import { Skeleton } from '@shared/ui/skeleton'
 
 const route = useRoute()
@@ -28,9 +27,9 @@ const selectedImageIndex = ref(0)
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl px-4 py-6">
-    <div v-if="pending" class="grid gap-8 md:grid-cols-2">
-      <Skeleton class="aspect-square w-full" />
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:py-10">
+    <div v-if="pending" class="grid gap-10 md:grid-cols-2">
+      <Skeleton class="aspect-square w-full rounded-lg" />
       <div class="space-y-4">
         <Skeleton class="h-8 w-2/3" />
         <Skeleton class="h-6 w-1/3" />
@@ -40,8 +39,8 @@ const selectedImageIndex = ref(0)
 
     <p v-else-if="error" role="alert" class="text-destructive">{{ error.message }}</p>
 
-    <div v-else-if="product" class="grid gap-8 md:grid-cols-2">
-      <div class="flex flex-col gap-2">
+    <div v-else-if="product" class="grid gap-10 md:grid-cols-2">
+      <div class="flex flex-col gap-3">
         <div class="aspect-square overflow-hidden rounded-lg bg-muted">
           <NuxtImg
             v-if="product.images[selectedImageIndex]"
@@ -58,8 +57,8 @@ const selectedImageIndex = ref(0)
             v-for="(image, index) in product.images"
             :key="image.url"
             type="button"
-            class="aspect-square overflow-hidden rounded-md border-2"
-            :class="index === selectedImageIndex ? 'border-primary' : 'border-transparent'"
+            class="aspect-square overflow-hidden rounded-md ring-1 ring-border transition-all"
+            :class="index === selectedImageIndex ? 'ring-2 ring-primary' : 'hover:ring-foreground/30'"
             @click="selectedImageIndex = index"
           >
             <NuxtImg
@@ -74,14 +73,13 @@ const selectedImageIndex = ref(0)
         </div>
       </div>
 
-      <div class="flex flex-col gap-4">
-        <h1 class="text-2xl font-bold">{{ product.title }}</h1>
-        <p class="text-xl font-semibold">{{ formatMoney(product.priceRange.minVariantPrice) }}</p>
+      <div class="flex flex-col gap-5">
+        <h1 class="text-2xl font-semibold tracking-tight">{{ product.title }}</h1>
 
         <AddToCartForm :product="product" />
 
-        <div>
-          <h2 class="font-medium">{{ $t('product.description') }}</h2>
+        <div class="border-t pt-5">
+          <h2 class="mb-1 text-sm font-medium">{{ $t('product.description') }}</h2>
           <p class="whitespace-pre-line text-sm text-muted-foreground">{{ product.description }}</p>
         </div>
       </div>
