@@ -6,7 +6,12 @@ const { isEmpty, isRedirecting, goToCheckout } = useCheckout()
 </script>
 
 <template>
-  <Button class="w-full" :disabled="isEmpty || isRedirecting" @click="goToCheckout">
+  <Button
+    class="w-full"
+    data-testid="checkout-button"
+    :disabled="isEmpty || isRedirecting"
+    @click="goToCheckout"
+  >
     {{ $t('cart.checkout') }}
   </Button>
 </template>

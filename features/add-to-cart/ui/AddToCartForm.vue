@@ -35,7 +35,7 @@ const hasSelectableOptions = computed(
           :model-value="selectedOptions[option.name]"
           @update:model-value="(value) => selectOption(option.name, String(value))"
         >
-          <SelectTrigger :id="`option-${option.name}`">
+          <SelectTrigger :id="`option-${option.name}`" data-testid="option-select">
             <SelectValue :placeholder="$t('product.selectOptions')" />
           </SelectTrigger>
           <SelectContent>
