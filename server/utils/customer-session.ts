@@ -8,6 +8,8 @@ export interface CustomerSessionData {
   expiresAt?: number
   /** CSRF guard for the OAuth redirect — cleared once the callback validates it. */
   oauthState?: string
+  /** PKCE code verifier for the in-flight login attempt — cleared once the callback exchanges it. */
+  codeVerifier?: string
   /** Where to send the customer after a successful login. */
   returnTo?: string
 }

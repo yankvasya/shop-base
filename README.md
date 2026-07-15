@@ -27,7 +27,8 @@ server/      Nitro server routes — currently just the Customer Account API's O
              flow and the account/orders endpoints it backs. Everything else in this
              app talks to Shopify's Storefront API directly (client-side/SSR, no
              server route needed); this is the one integration that has to be
-             server-only, since it holds a confidential client secret and session.
+             server-only, since it holds the session cookie (PKCE code verifier during
+             login, then the access/refresh tokens) that must never reach client-side JS.
 widgets/     Large independent UI blocks: Header, ProductGrid, CartDrawer, Footer.
 features/    User scenarios: add-to-cart, product-filter, product-sort, product-search,
              checkout-form, customer-auth.
@@ -136,36 +137,41 @@ URL (or a tunnel like ngrok) before you can test it — it won't work against pl
 **Setup, in the Shopify admin:**
 
 1. **Settings → Customer accounts** → enable "Customer accounts"
-2. **Sales channels → Headless** → your storefront → **Customer Account API settings**
-   → client type **Confidential client** (this app has a real Nitro server, so it can
-   hold a client secret — more secure than the public/PKCE flow meant for pure SPAs)
+2. Under the **Customer Account API credentials** section of that same page, check the
+   **client type** — as of writing, Shopify only offers **public clients** for headless
+   storefronts here (no client secret), so this app authenticates with **PKCE**
+   (RFC 7636) instead of a confidential-client secret. If you ever see a confidential
+   client type offered instead, the code here would need a small change back to
+   secret-based token exchange.
 3. Register the **callback URL**: `<NUXT_PUBLIC_SITE_URL>/api/auth/callback`
-4. Copy the **client ID** and **client secret** from the Credentials section
+4. Copy the **client ID**
 
 **Env vars** (see `.env.example`):
 
 ```
 NUXT_PUBLIC_SITE_URL=https://your-deployed-domain.example.com
 SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID=...
-SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET=...
 NUXT_SESSION_PASSWORD=...   # 32+ random chars, e.g. `openssl rand -base64 32`
 ```
 
-**How it works:** `server/api/auth/login` redirects to Shopify's authorization
-endpoint (discovered from the shop's `.well-known/openid-configuration`, not
-hardcoded); `server/api/auth/callback` exchanges the code for tokens and stores them
-in a sealed httpOnly session cookie (`server/utils/customer-session.ts`, via h3's
-`useSession`) — the tokens never reach client-side JS. `entities/customer` and
-`entities/order` call the Customer Account API's GraphQL endpoint (also discovered,
-from `.well-known/customer-account-api`) using that session's access token, proxied
+**How it works:** `server/api/auth/login` generates a PKCE code verifier (stashed in
+the session cookie) and its SHA-256 challenge, then redirects to Shopify's
+authorization endpoint (discovered from the shop's `.well-known/openid-configuration`,
+not hardcoded) with that challenge and a CSRF `state`. `server/api/auth/callback`
+validates `state`, exchanges the code plus the stashed verifier for tokens
+(`shared/api/shopify-customer/pkce.ts`, `token.ts`), and stores them in a sealed
+httpOnly session cookie (`server/utils/customer-session.ts`, via h3's `useSession`) —
+the tokens never reach client-side JS. `entities/customer` and `entities/order` call
+the Customer Account API's GraphQL endpoint (also discovered, from
+`.well-known/customer-account-api`) using that session's access token, proxied
 through `server/api/account/*` routes.
 
-**Caveat:** the OAuth mechanics (discovery, token exchange/refresh, session handling)
-are implemented against Shopify's documented endpoint behavior, but the `Customer`/
-`Order`/`LineItem` field selections in `entities/customer` and `entities/order`
-haven't been exercised against a live store yet — that needs the setup above done
-first. Expect the same kind of small fixes we hit getting the Storefront API right
-(wrong field name, unsupported argument) on the first real login.
+**Caveat:** the OAuth mechanics (discovery, PKCE, token exchange/refresh, session
+handling) are implemented against Shopify's documented endpoint behavior, but the
+`Customer`/`Order`/`LineItem` field selections in `entities/customer` and
+`entities/order` haven't been exercised against a live store yet — that needs the
+setup above done first. Expect the same kind of small fixes we hit getting the
+Storefront API right (wrong field name, unsupported argument) on the first real login.
 
 ## Scripts
 
