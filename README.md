@@ -196,6 +196,9 @@ first. Expect the same kind of small fixes we hit getting the Storefront API rig
 - Customer login (Customer Account API, OAuth 2.0) and order history at `/account` —
   see the "Customer accounts" section above for setup and its current caveat
 - i18n: English + Russian (`i18n/locales/`), locale-prefixed routes
+- SEO: per-page title/description/Open Graph tags, `Product` JSON-LD structured
+  data on the PDP, `hreflang` alternates for both locales, a dynamic
+  `/sitemap.xml` covering every product handle, and `/robots.txt`
 - Every Storefront API response is validated with Zod at the `shared/api/shopify`
   boundary before it reaches application code
 - Loading/error states on every async call (catalog, PDP, search)

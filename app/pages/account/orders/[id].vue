@@ -5,6 +5,8 @@ import { formatMoney } from '@shared/lib'
 
 definePageMeta({ middleware: 'auth' })
 
+useSeoMeta({ robots: 'noindex, nofollow' })
+
 const route = useRoute()
 // route.params.id is already decoded by vue-router (real slashes in the
 // GID) — re-encode it for the internal API call, whose [id] route param

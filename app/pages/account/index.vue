@@ -3,6 +3,9 @@ import { Skeleton } from '@shared/ui/skeleton'
 
 definePageMeta({ middleware: 'auth' })
 
+const { t } = useI18n()
+useSeoMeta({ title: () => t('account.myAccount'), robots: 'noindex, nofollow' })
+
 const { data: profile, pending, error } = await useFetch('/api/account/profile', { key: 'account-profile' })
 </script>
 
