@@ -72,12 +72,12 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Server-only — never exposed to the client. The Customer Account API
-    // uses a confidential client (we have a real backend to hold a secret),
-    // so the client secret lives here, not under `public`.
+    // Server-only, not because it's secret (Shopify only offers public/PKCE
+    // clients for headless storefronts — there's no client secret to hold)
+    // but because the OAuth flow itself (state/PKCE, token exchange,
+    // session) has to run server-side regardless.
     shopifyCustomerAccount: {
       clientId: '',
-      clientSecret: '',
     },
     session: {
       password: '',

@@ -6,14 +6,14 @@ export default defineEventHandler(async (event) => {
   const state = typeof query.state === 'string' ? query.state : undefined
 
   const session = await useCustomerSession(event)
-  const { oauthState, returnTo } = session.data
+  const { oauthState, codeVerifier, returnTo } = session.data
 
-  if (!code || !state || !oauthState || state !== oauthState) {
+  if (!code || !state || !oauthState || state !== oauthState || !codeVerifier) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid or expired login attempt' })
   }
 
   const { siteUrl } = useRuntimeConfig().public
-  const tokens = await exchangeCodeForTokens(code, `${siteUrl}/api/auth/callback`)
+  const tokens = await exchangeCodeForTokens(code, `${siteUrl}/api/auth/callback`, codeVerifier)
 
   await session.update({
     accessToken: tokens.accessToken,
@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
     idToken: tokens.idToken,
     expiresAt: tokens.expiresAt,
     oauthState: undefined,
+    codeVerifier: undefined,
     returnTo: undefined,
   })
 

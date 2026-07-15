@@ -20,20 +20,12 @@ const tokenResponseSchema = z.object({
   expires_in: z.number(),
 })
 
-function basicAuthHeader(): string {
-  const { clientId, clientSecret } = useRuntimeConfig().shopifyCustomerAccount
-  return `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`
-}
-
 async function requestTokens(body: Record<string, string>, fallbackIdToken = ''): Promise<CustomerTokens> {
   const endpoints = await getCustomerAccountEndpoints()
 
   const raw = await $fetch(endpoints.tokenEndpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: basicAuthHeader(),
-    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams(body),
   })
 
@@ -47,7 +39,17 @@ async function requestTokens(body: Record<string, string>, fallbackIdToken = '')
   }
 }
 
-export async function exchangeCodeForTokens(code: string, redirectUri: string): Promise<CustomerTokens> {
+// This is a public client (no client secret) — Shopify's Customer Account
+// API only offers public/PKCE clients for headless storefronts like this
+// one, confirmed against the live store's admin. The code verifier (never
+// sent to Shopify, only its hashed challenge was, back in the authorize
+// step) is what proves this exchange came from the same login attempt,
+// standing in for the secret a confidential client would send.
+export async function exchangeCodeForTokens(
+  code: string,
+  redirectUri: string,
+  codeVerifier: string,
+): Promise<CustomerTokens> {
   const { clientId } = useRuntimeConfig().shopifyCustomerAccount
 
   return requestTokens({
@@ -55,6 +57,7 @@ export async function exchangeCodeForTokens(code: string, redirectUri: string): 
     client_id: clientId,
     code,
     redirect_uri: redirectUri,
+    code_verifier: codeVerifier,
   })
 }
 
