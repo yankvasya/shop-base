@@ -167,6 +167,37 @@ haven't been exercised against a live store yet — that needs the setup above d
 first. Expect the same kind of small fixes we hit getting the Storefront API right
 (wrong field name, unsupported argument) on the first real login.
 
+## E2E tests (Playwright)
+
+`e2e/` holds smoke tests that run against a real Nuxt dev server with no
+mocking — catalog browsing, filters/sort, PDP + add-to-cart, cart drawer
+quantity/remove, the checkout redirect, search, and the SEO routes
+(`/sitemap.xml`, `/robots.txt`, `/ru`). They hit the same live Shopify store
+as `pnpm dev`, so they need the same `.env` as local development (at minimum
+`NUXT_PUBLIC_SHOPIFY_STORE_DOMAIN`, `NUXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN`,
+`NUXT_SESSION_PASSWORD` — the last one because `AuthMenu` calls
+`/api/auth/session` on every page load, which needs a session secret to boot
+even if you never log in).
+
+Run locally:
+
+```bash
+pnpm exec playwright install --with-deps chromium  # once
+pnpm test:e2e
+```
+
+`playwright.config.ts` boots `pnpm dev` for you and waits for it to be ready
+(`webServer`), so you don't need a server already running unless you want to
+reuse one (`reuseExistingServer` is on outside of CI).
+
+These are **not** part of the required `ci.yml` pipeline — every run adds
+real carts/checkouts to the live store, and CI would need the store
+credentials as secrets, which not everyone forking this repo will have. They
+run instead in a separate `.github/workflows/e2e.yml`, triggered manually
+(`workflow_dispatch`) or on a weekly schedule, gated behind these repo
+secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
+`NUXT_SESSION_PASSWORD`.
+
 ## Scripts
 
 | Script                                       | What it does                                                                          |
@@ -178,6 +209,7 @@ first. Expect the same kind of small fixes we hit getting the Storefront API rig
 | `pnpm lint` / `lint:fix`                     | ESLint                                                                                |
 | `pnpm format` / `format:check`               | Prettier                                                                              |
 | `pnpm test` / `test:watch` / `test:coverage` | Vitest                                                                                |
+| `pnpm test:e2e`                              | Playwright smoke tests against a real dev server (see "E2E tests" above)              |
 | `pnpm codegen`                               | Regenerate `shared/types/storefront.generated.ts` from the live Storefront API schema |
 
 ## What's implemented
@@ -205,6 +237,7 @@ first. Expect the same kind of small fixes we hit getting the Storefront API rig
 - Tests: `entities/product` (Zod schemas, variant selection), `entities/cart`
   (Pinia store — optimistic add, rollback on failure, quantity/remove), the
   `add-to-cart` feature composable, and the filter query-string builder
+- E2E smoke tests (Playwright) against a real dev server — see "E2E tests" above
 
 ## Not yet implemented
 

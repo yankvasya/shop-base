@@ -22,6 +22,12 @@ logs
 # Test coverage
 coverage
 
+# Playwright
+playwright-report
+test-results
+blob-report
+playwright/.cache
+
 # Generated from the live Shopify schema — run `pnpm codegen` to produce it
 shared/types/storefront.generated.ts
 

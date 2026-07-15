@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "codegen": "node --env-file-if-exists=.env node_modules/@graphql-codegen/cli/esm/bin.js --config codegen.ts"
   },
   "dependencies": {
@@ -59,6 +60,7 @@
     "@graphql-codegen/typescript-operations": "^6.1.0",
     "@nuxt/eslint": "^1.16.0",
     "@nuxt/test-utils": "^4.0.3",
+    "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.7",

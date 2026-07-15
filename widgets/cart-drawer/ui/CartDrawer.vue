@@ -38,9 +38,19 @@ async function removeLine(lineId: string) {
 <template>
   <Sheet v-model:open="isOpen">
     <SheetTrigger as-child>
-      <Button variant="outline" size="icon" class="relative" :aria-label="$t('nav.cart')">
+      <Button
+        variant="outline"
+        size="icon"
+        class="relative"
+        data-testid="cart-trigger"
+        :aria-label="$t('nav.cart')"
+      >
         <ShoppingCart class="h-4 w-4" />
-        <Badge v-if="lineCount > 0" class="absolute -right-2 -top-2 h-5 min-w-5 justify-center px-1">
+        <Badge
+          v-if="lineCount > 0"
+          data-testid="cart-count"
+          class="absolute -right-2 -top-2 h-5 min-w-5 justify-center px-1"
+        >
           {{ lineCount }}
         </Badge>
       </Button>
@@ -56,7 +66,7 @@ async function removeLine(lineId: string) {
       <p v-if="isEmpty && !isLoading" class="px-4 text-muted-foreground">{{ $t('cart.empty') }}</p>
 
       <div v-else class="flex-1 space-y-4 overflow-y-auto px-4">
-        <div v-for="line in lines" :key="line.id" class="flex gap-3 border-b pb-4">
+        <div v-for="line in lines" :key="line.id" class="flex gap-3 border-b pb-4" data-testid="cart-line">
           <NuxtImg
             v-if="line.merchandise.image"
             :src="line.merchandise.image.url"
@@ -75,16 +85,20 @@ async function removeLine(lineId: string) {
               <Button
                 variant="outline"
                 size="icon-sm"
+                data-testid="cart-line-decrement"
                 :disabled="pendingLineId === line.id || line.quantity <= 1"
                 :aria-label="$t('cart.quantity')"
                 @click="changeQuantity(line.id, line.quantity - 1)"
               >
                 <Minus class="h-3 w-3" />
               </Button>
-              <span class="w-6 text-center text-sm">{{ line.quantity }}</span>
+              <span class="w-6 text-center text-sm" data-testid="cart-line-quantity">{{
+                line.quantity
+              }}</span>
               <Button
                 variant="outline"
                 size="icon-sm"
+                data-testid="cart-line-increment"
                 :disabled="pendingLineId === line.id"
                 :aria-label="$t('cart.quantity')"
                 @click="changeQuantity(line.id, line.quantity + 1)"
@@ -95,6 +109,7 @@ async function removeLine(lineId: string) {
                 variant="ghost"
                 size="icon-sm"
                 class="ml-auto"
+                data-testid="cart-line-remove"
                 :disabled="pendingLineId === line.id"
                 :aria-label="$t('cart.remove')"
                 @click="removeLine(line.id)"
@@ -110,7 +125,7 @@ async function removeLine(lineId: string) {
       <SheetFooter v-if="!isEmpty" class="flex-col gap-3 border-t pt-4">
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <span>{{ $t('cart.subtotal') }}</span>
-          <span v-if="subtotal" class="text-base font-semibold text-primary">{{
+          <span v-if="subtotal" class="text-base font-semibold text-primary" data-testid="cart-subtotal">{{
             formatMoney(subtotal)
           }}</span>
         </div>

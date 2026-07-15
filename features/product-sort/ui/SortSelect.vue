@@ -8,7 +8,7 @@ const { t } = useI18n()
 
 <template>
   <Select :model-value="sortValue" @update:model-value="(value) => setSort(value as typeof sortValue)">
-    <SelectTrigger class="w-56">
+    <SelectTrigger class="w-56" data-testid="sort-select">
       <SelectValue :placeholder="t('catalog.sortBy')" />
     </SelectTrigger>
     <SelectContent>

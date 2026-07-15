@@ -42,7 +42,11 @@ function applyPriceRange() {
 <template>
   <div class="flex flex-wrap items-center gap-3">
     <label class="flex items-center gap-2 text-sm">
-      <Checkbox :model-value="inStockOnly" @update:model-value="(value) => setInStockOnly(value === true)" />
+      <Checkbox
+        :model-value="inStockOnly"
+        data-testid="filter-in-stock"
+        @update:model-value="(value) => setInStockOnly(value === true)"
+      />
       {{ t('catalog.inStockOnly') }}
     </label>
 
@@ -50,7 +54,7 @@ function applyPriceRange() {
       :model-value="productType || ALL"
       @update:model-value="(value) => setProductType(value === ALL ? '' : String(value))"
     >
-      <SelectTrigger class="w-40">
+      <SelectTrigger class="w-40" data-testid="filter-type-select">
         <SelectValue :placeholder="t('catalog.productType')" />
       </SelectTrigger>
       <SelectContent>
@@ -65,7 +69,7 @@ function applyPriceRange() {
       :model-value="tag || ALL"
       @update:model-value="(value) => setTag(value === ALL ? '' : String(value))"
     >
-      <SelectTrigger class="w-40">
+      <SelectTrigger class="w-40" data-testid="filter-tag-select">
         <SelectValue :placeholder="t('catalog.tag')" />
       </SelectTrigger>
       <SelectContent>
@@ -98,7 +102,13 @@ function applyPriceRange() {
       />
     </div>
 
-    <Button v-if="hasActiveFilters" variant="ghost" size="sm" @click="clearFilters">
+    <Button
+      v-if="hasActiveFilters"
+      variant="ghost"
+      size="sm"
+      data-testid="filter-clear"
+      @click="clearFilters"
+    >
       {{ t('catalog.clearFilters') }}
     </Button>
   </div>
