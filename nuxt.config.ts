@@ -76,8 +76,15 @@ export default defineNuxtConfig({
     // clients for headless storefronts — there's no client secret to hold)
     // but because the OAuth flow itself (state/PKCE, token exchange,
     // session) has to run server-side regardless.
+    //
+    // Read directly from process.env rather than relying on Nuxt's
+    // automatic NUXT_-prefixed env mapping: the documented/deployed env var
+    // is SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID (no NUXT_ prefix), which Nuxt's
+    // runtimeConfig auto-population silently ignores — this key would
+    // otherwise always resolve to '', with no error, just an empty client_id
+    // sent to Shopify.
     shopifyCustomerAccount: {
-      clientId: '',
+      clientId: process.env.SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID ?? '',
     },
     session: {
       password: '',
