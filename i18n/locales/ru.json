@@ -45,10 +45,16 @@
     "title": "Корзина",
     "empty": "Корзина пуста",
     "subtotal": "Промежуточный итог",
+    "total": "Итого",
     "checkout": "Оформить заказ",
     "remove": "Удалить",
     "quantity": "Кол-во",
-    "itemCount": "0 товаров | 1 товар | {count} товара(ов)"
+    "itemCount": "0 товаров | 1 товар | {count} товара(ов)",
+    "discountPlaceholder": "Промокод",
+    "discountApply": "Применить",
+    "discountApplying": "Применяем...",
+    "discountRemove": "Удалить промокод {code}",
+    "discountNotApplicable": "не подходит для этой корзины"
   },
   "search": {
     "placeholder": "Поиск товаров...",

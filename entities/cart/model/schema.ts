@@ -22,6 +22,11 @@ export const cartLineSchema = z.object({
   merchandise: cartMerchandiseSchema,
 })
 
+export const cartDiscountCodeSchema = z.object({
+  code: z.string(),
+  applicable: z.boolean(),
+})
+
 export const cartSchema = z.object({
   id: z.string(),
   checkoutUrl: z.string(),
@@ -32,8 +37,10 @@ export const cartSchema = z.object({
     totalTaxAmount: moneySchema.nullable(),
   }),
   lines: edgeList(cartLineSchema),
+  discountCodes: z.array(cartDiscountCodeSchema),
 })
 
 export type CartMerchandise = z.infer<typeof cartMerchandiseSchema>
 export type CartLine = z.infer<typeof cartLineSchema>
+export type CartDiscountCode = z.infer<typeof cartDiscountCodeSchema>
 export type Cart = z.infer<typeof cartSchema>

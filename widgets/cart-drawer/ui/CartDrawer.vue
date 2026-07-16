@@ -8,9 +8,10 @@ import { Badge } from '@shared/ui/badge'
 import { formatMoney } from '@shared/lib'
 import { useCartStore } from '@entities/cart'
 import { CheckoutButton } from '@features/checkout-form'
+import { DiscountCodeForm } from '@features/cart-discount'
 
 const cartStore = useCartStore()
-const { lines, lineCount, subtotal, isLoading, error, isEmpty } = storeToRefs(cartStore)
+const { lines, lineCount, subtotal, total, isLoading, error, isEmpty } = storeToRefs(cartStore)
 
 const isOpen = ref(false)
 const pendingLineId = ref<string | null>(null)
@@ -122,13 +123,33 @@ async function removeLine(lineId: string) {
         </div>
       </div>
 
-      <SheetFooter v-if="!isEmpty" class="flex-col gap-3 border-t pt-4">
+      <SheetFooter v-if="!isEmpty" class="flex-col gap-3 border-t pt-4 sm:flex-col sm:justify-normal">
+        <DiscountCodeForm />
+
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <span>{{ $t('cart.subtotal') }}</span>
-          <span v-if="subtotal" class="text-base font-semibold text-primary" data-testid="cart-subtotal">{{
-            formatMoney(subtotal)
+          <span
+            v-if="subtotal"
+            class="text-base font-semibold"
+            :class="
+              total && total.amount !== subtotal.amount
+                ? 'text-muted-foreground line-through'
+                : 'text-primary'
+            "
+            data-testid="cart-subtotal"
+            >{{ formatMoney(subtotal) }}</span
+          >
+        </div>
+        <div
+          v-if="total && subtotal && total.amount !== subtotal.amount"
+          class="flex w-full items-center justify-between text-sm font-medium"
+        >
+          <span>{{ $t('cart.total') }}</span>
+          <span class="text-base font-semibold text-primary" data-testid="cart-total">{{
+            formatMoney(total)
           }}</span>
         </div>
+
         <CheckoutButton />
       </SheetFooter>
     </SheetContent>

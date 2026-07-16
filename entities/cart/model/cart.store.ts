@@ -2,7 +2,14 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 import type { Money, Image, SelectedOption } from '@shared/types/common'
-import { getCart, createCart, addCartLines, updateCartLines, removeCartLines } from '../api'
+import {
+  getCart,
+  createCart,
+  addCartLines,
+  updateCartLines,
+  removeCartLines,
+  updateCartDiscountCodes,
+} from '../api'
 import type { Cart, CartLine } from './schema'
 
 export interface OptimisticLineInfo {
@@ -47,8 +54,10 @@ export const useCartStore = defineStore('cart', () => {
   const lines = computed(() => cart.value?.lines ?? [])
   const lineCount = computed(() => cart.value?.totalQuantity ?? 0)
   const subtotal = computed(() => cart.value?.cost.subtotalAmount ?? null)
+  const total = computed(() => cart.value?.cost.totalAmount ?? null)
   const checkoutUrl = computed(() => cart.value?.checkoutUrl ?? null)
   const isEmpty = computed(() => lineCount.value === 0)
+  const discountCodes = computed(() => cart.value?.discountCodes ?? [])
 
   /** Loads the persisted cart, if any. Call once on the client (SSR has no localStorage). */
   async function init() {
@@ -154,18 +163,65 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  /**
+   * Shopify's `cartDiscountCodesUpdate` takes the desired full set of codes,
+   * not a single one to add/remove — both actions below just compute that
+   * set from the current cart and send it. Not optimistic: unlike quantity
+   * changes, whether a code is even valid can only be known from Shopify's
+   * response, so the UI shows a loading state instead of guessing.
+   */
+  async function applyDiscountCode(code: string) {
+    if (!cart.value || !code.trim()) return
+    error.value = null
+
+    const cartIdValue = cart.value.id
+    const codes = [...new Set([...cart.value.discountCodes.map((c) => c.code), code.trim()])]
+
+    isLoading.value = true
+    try {
+      cart.value = await updateCartDiscountCodes(cartIdValue, codes)
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Failed to apply discount code'
+      throw e
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function removeDiscountCode(code: string) {
+    if (!cart.value) return
+    error.value = null
+
+    const cartIdValue = cart.value.id
+    const codes = cart.value.discountCodes.map((c) => c.code).filter((c) => c !== code)
+
+    isLoading.value = true
+    try {
+      cart.value = await updateCartDiscountCodes(cartIdValue, codes)
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Failed to remove discount code'
+      throw e
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     cart,
     lines,
     lineCount,
     subtotal,
+    total,
     checkoutUrl,
     isEmpty,
+    discountCodes,
     isLoading,
     error,
     init,
     addLine,
     updateLineQuantity,
     removeLine,
+    applyDiscountCode,
+    removeDiscountCode,
   }
 })
