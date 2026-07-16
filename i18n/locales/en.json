@@ -45,10 +45,16 @@
     "title": "Your cart",
     "empty": "Your cart is empty",
     "subtotal": "Subtotal",
+    "total": "Total",
     "checkout": "Checkout",
     "remove": "Remove",
     "quantity": "Qty",
-    "itemCount": "0 items | 1 item | {count} items"
+    "itemCount": "0 items | 1 item | {count} items",
+    "discountPlaceholder": "Discount code",
+    "discountApply": "Apply",
+    "discountApplying": "Applying...",
+    "discountRemove": "Remove code {code}",
+    "discountNotApplicable": "not valid for this cart"
   },
   "search": {
     "placeholder": "Search products...",

@@ -7,6 +7,7 @@ import {
   CART_LINES_ADD_MUTATION,
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
+  CART_DISCOUNT_CODES_UPDATE_MUTATION,
 } from './queries'
 
 const userErrorSchema = z.object({
@@ -71,4 +72,18 @@ export async function removeCartLines(cartId: string, lineIds: string[]): Promis
     { cartId, lineIds },
   )
   return unwrapCartPayload(data.cartLinesRemove, 'Failed to remove item from cart')
+}
+
+/**
+ * Replaces the cart's full set of applied discount codes — Shopify's API
+ * takes the desired end state, not a single code to add/remove, so callers
+ * pass the complete list they want applied.
+ */
+export async function updateCartDiscountCodes(cartId: string, discountCodes: string[]): Promise<Cart> {
+  const data = await shopifyRequest(
+    CART_DISCOUNT_CODES_UPDATE_MUTATION,
+    z.object({ cartDiscountCodesUpdate: cartPayloadSchema() }),
+    { cartId, discountCodes },
+  )
+  return unwrapCartPayload(data.cartDiscountCodesUpdate, 'Failed to update discount codes')
 }

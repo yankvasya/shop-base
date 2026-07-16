@@ -17,6 +17,10 @@ export const CART_FRAGMENT = /* GraphQL */ `
         currencyCode
       }
     }
+    discountCodes {
+      code
+      applicable
+    }
     lines(first: 100) {
       edges {
         node {
@@ -116,6 +120,21 @@ export const CART_LINES_REMOVE_MUTATION = /* GraphQL */ `
   ${CART_FRAGMENT}
   mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        ...CartFragment
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`
+
+export const CART_DISCOUNT_CODES_UPDATE_MUTATION = /* GraphQL */ `
+  ${CART_FRAGMENT}
+  mutation CartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
       cart {
         ...CartFragment
       }

@@ -228,6 +228,10 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
 - Cart: Pinia store, cart id persisted to `localStorage` via VueUse, optimistic UI
   on add (the line appears immediately, then reconciles with the server response —
   or rolls back on failure)
+- Discount codes: apply/remove in the cart drawer (`cartDiscountCodesUpdate`), with
+  per-code applicability shown (Shopify still returns an invalid code, just marked
+  `applicable: false`, rather than erroring) and the pre/post-discount total shown
+  side by side once a valid code changes the price
 - Checkout: redirects to Shopify's hosted checkout (`cart.checkoutUrl`) — this app
   never touches payment data
 - Search page (Storefront `search` query)

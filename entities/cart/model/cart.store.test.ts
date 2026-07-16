@@ -26,6 +26,7 @@ function makeCart(overrides: Partial<Cart> = {}): Cart {
       totalTaxAmount: null,
     },
     lines: [],
+    discountCodes: [],
     ...overrides,
   }
 }
@@ -136,6 +137,71 @@ describe('useCartStore.removeLine', () => {
     await store.removeLine('line-1')
 
     expect(cartApi.removeCartLines).toHaveBeenCalledWith('cart-1', ['line-1'])
+    expect(store.cart).toEqual(updated)
+  })
+})
+
+describe('useCartStore.applyDiscountCode', () => {
+  it('sends the existing codes plus the new one and syncs the returned cart', async () => {
+    const store = useCartStore()
+    store.cart = makeCart({ id: 'cart-1', discountCodes: [{ code: 'EXISTING', applicable: true }] })
+
+    const updated = makeCart({
+      id: 'cart-1',
+      discountCodes: [
+        { code: 'EXISTING', applicable: true },
+        { code: 'SAVE10', applicable: true },
+      ],
+    })
+    vi.mocked(cartApi.updateCartDiscountCodes).mockResolvedValue(updated)
+
+    await store.applyDiscountCode('SAVE10')
+
+    expect(cartApi.updateCartDiscountCodes).toHaveBeenCalledWith('cart-1', ['EXISTING', 'SAVE10'])
+    expect(store.cart).toEqual(updated)
+  })
+
+  it('sets an error and does not update the cart when the mutation fails', async () => {
+    const store = useCartStore()
+    const original = makeCart({ id: 'cart-1' })
+    store.cart = original
+
+    vi.mocked(cartApi.updateCartDiscountCodes).mockRejectedValue(new Error('invalid code'))
+
+    await expect(store.applyDiscountCode('BADCODE')).rejects.toThrow('invalid code')
+
+    expect(store.cart).toEqual(original)
+    expect(store.error).toBe('invalid code')
+    expect(store.isLoading).toBe(false)
+  })
+
+  it('does nothing for a blank code', async () => {
+    const store = useCartStore()
+    store.cart = makeCart({ id: 'cart-1' })
+
+    await store.applyDiscountCode('   ')
+
+    expect(cartApi.updateCartDiscountCodes).not.toHaveBeenCalled()
+  })
+})
+
+describe('useCartStore.removeDiscountCode', () => {
+  it('sends the remaining codes and syncs the returned cart', async () => {
+    const store = useCartStore()
+    store.cart = makeCart({
+      id: 'cart-1',
+      discountCodes: [
+        { code: 'KEEP', applicable: true },
+        { code: 'DROP', applicable: true },
+      ],
+    })
+
+    const updated = makeCart({ id: 'cart-1', discountCodes: [{ code: 'KEEP', applicable: true }] })
+    vi.mocked(cartApi.updateCartDiscountCodes).mockResolvedValue(updated)
+
+    await store.removeDiscountCode('DROP')
+
+    expect(cartApi.updateCartDiscountCodes).toHaveBeenCalledWith('cart-1', ['KEEP'])
     expect(store.cart).toEqual(updated)
   })
 })
