@@ -230,8 +230,9 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
   or rolls back on failure)
 - Discount codes: apply/remove in the cart drawer (`cartDiscountCodesUpdate`), with
   per-code applicability shown (Shopify still returns an invalid code, just marked
-  `applicable: false`, rather than erroring) and the pre/post-discount total shown
-  side by side once a valid code changes the price
+  `applicable: false`, rather than erroring). `cost.subtotalAmount` already reflects
+  any applied discount at the cart stage (verified live), so the subtotal shown is
+  simply the discounted price — no separate "before/after" total to compute
 - Checkout: redirects to Shopify's hosted checkout (`cart.checkoutUrl`) — this app
   never touches payment data
 - Search page (Storefront `search` query)

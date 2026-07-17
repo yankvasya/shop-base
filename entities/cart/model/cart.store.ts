@@ -53,8 +53,12 @@ export const useCartStore = defineStore('cart', () => {
 
   const lines = computed(() => cart.value?.lines ?? [])
   const lineCount = computed(() => cart.value?.totalQuantity ?? 0)
+  // Shopify's Cart.cost.subtotalAmount already reflects applied discounts
+  // (verified live: a 42%-off code dropped it directly, in lockstep with
+  // totalAmount) — there's no separate "before discount" field to diff
+  // against on a cart that hasn't reached checkout yet, so cost.totalAmount
+  // isn't exposed here; it would always equal subtotal at this stage.
   const subtotal = computed(() => cart.value?.cost.subtotalAmount ?? null)
-  const total = computed(() => cart.value?.cost.totalAmount ?? null)
   const checkoutUrl = computed(() => cart.value?.checkoutUrl ?? null)
   const isEmpty = computed(() => lineCount.value === 0)
   const discountCodes = computed(() => cart.value?.discountCodes ?? [])
@@ -211,7 +215,6 @@ export const useCartStore = defineStore('cart', () => {
     lines,
     lineCount,
     subtotal,
-    total,
     checkoutUrl,
     isEmpty,
     discountCodes,
