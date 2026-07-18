@@ -123,5 +123,7 @@ useHead(() => ({
         </div>
       </div>
     </div>
+
+    <ProductRecommendations v-if="product" :handle="product.handle" />
   </div>
 </template>

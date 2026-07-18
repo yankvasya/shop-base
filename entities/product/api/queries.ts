@@ -149,3 +149,14 @@ export const PRODUCT_SEARCH_QUERY = /* GraphQL */ `
     }
   }
 `
+
+// Unlike the other product queries, this one returns a plain list, not a
+// Relay connection — no pagination, no edges/pageInfo to unwrap.
+export const PRODUCT_RECOMMENDATIONS_QUERY = /* GraphQL */ `
+  ${PRODUCT_CARD_FRAGMENT}
+  query ProductRecommendations($productHandle: String!) {
+    productRecommendations(productHandle: $productHandle, intent: RELATED) {
+      ...ProductCard
+    }
+  }
+`

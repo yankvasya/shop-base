@@ -39,7 +39,8 @@
     "outOfStock": "Out of stock",
     "selectOptions": "Select options",
     "quantity": "Quantity",
-    "description": "Description"
+    "description": "Description",
+    "recommendations": "You may also like"
   },
   "cart": {
     "title": "Your cart",
