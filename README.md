@@ -236,6 +236,10 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
 - Checkout: redirects to Shopify's hosted checkout (`cart.checkoutUrl`) — this app
   never touches payment data
 - Search page (Storefront `search` query)
+- Product recommendations ("You may also like") on the PDP, via the Storefront API's
+  ML-based `productRecommendations(productHandle:, intent: RELATED)` — a plain list,
+  not paginated. Purely supplementary: a failed fetch or a product with no
+  recommendations just means the section doesn't render, never an error on the page
 - Customer login (Customer Account API, OAuth 2.0) and order history at `/account` —
   see the "Customer accounts" section above for setup and its current caveat
 - i18n: English + Russian (`i18n/locales/`), locale-prefixed routes

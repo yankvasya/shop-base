@@ -4,16 +4,19 @@ import {
   productSchema,
   productConnectionSchema,
   productFilterOptionsSchema,
+  productCardSchema,
   type Product,
   type ProductConnection,
   type ProductFilterOptions,
   type ProductSortKey,
+  type ProductCard,
 } from '../model/schema'
 import {
   PRODUCT_BY_HANDLE_QUERY,
   PRODUCT_LIST_QUERY,
   PRODUCT_FILTER_OPTIONS_QUERY,
   PRODUCT_SEARCH_QUERY,
+  PRODUCT_RECOMMENDATIONS_QUERY,
 } from './queries'
 
 export interface GetProductsParams {
@@ -71,4 +74,15 @@ export async function searchProducts(params: SearchProductsParams): Promise<Prod
   })
 
   return data.search
+}
+
+/** Shopify's ML-based "related products" for a given product handle. Not paginated — a plain list. */
+export async function getProductRecommendations(handle: string): Promise<ProductCard[]> {
+  const data = await shopifyRequest(
+    PRODUCT_RECOMMENDATIONS_QUERY,
+    z.object({ productRecommendations: z.array(productCardSchema) }),
+    { productHandle: handle },
+  )
+
+  return data.productRecommendations
 }

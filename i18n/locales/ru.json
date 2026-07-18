@@ -39,7 +39,8 @@
     "outOfStock": "Нет в наличии",
     "selectOptions": "Выберите вариант",
     "quantity": "Количество",
-    "description": "Описание"
+    "description": "Описание",
+    "recommendations": "Вам может понравиться"
   },
   "cart": {
     "title": "Корзина",
