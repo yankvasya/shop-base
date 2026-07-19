@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useStorage } from '@vueuse/core'
+import { useMarket } from '@entities/market'
 import type { Money, Image, SelectedOption } from '@shared/types/common'
 import {
   getCart,
@@ -47,6 +48,11 @@ export const useCartStore = defineStore('cart', () => {
   // from Shopify so prices/stock never drift from what checkout will charge.
   const cartId = useStorage<string | null>('shop-base:cart-id', null)
   const cart = ref<Cart | null>(null)
+  // A cart's currency is fixed at creation (see createCart's comment) — a
+  // direct entities/cart -> entities/market dependency, not a features one,
+  // so it stays a plain entity-to-entity relationship rather than reaching
+  // into feature internals.
+  const market = useMarket()
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   const isInitialized = ref(false)
@@ -93,7 +99,7 @@ export const useCartStore = defineStore('cart', () => {
       }
     }
 
-    const created = await createCart()
+    const created = await createCart([], market.country.value)
     cartId.value = created.id
     cart.value = created
     return created

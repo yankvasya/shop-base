@@ -2,6 +2,7 @@
 import { Button } from '@shared/ui/button'
 import { SearchBox } from '@features/product-search'
 import { AuthMenu } from '@features/customer-auth'
+import { MarketSwitcher } from '@features/market-switcher'
 
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
@@ -22,6 +23,8 @@ const availableLocales = computed(() =>
 
       <div class="ml-auto flex items-center gap-2">
         <SearchBox />
+
+        <MarketSwitcher />
 
         <Button v-for="loc in availableLocales" :key="loc.code" variant="ghost" size="sm" as-child>
           <NuxtLink :to="switchLocalePath(loc.code)">{{ loc.code.toUpperCase() }}</NuxtLink>

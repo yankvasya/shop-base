@@ -6,6 +6,13 @@ import type { Cart } from './schema'
 
 vi.mock('../api')
 
+// useMarket() reaches for useCookie/useAsyncData, Nuxt auto-imports that
+// don't exist in this plain Vitest environment — mocked to a fixed market
+// since these tests aren't about currency selection.
+vi.mock('@entities/market', () => ({
+  useMarket: () => ({ country: { value: 'US' }, availableCountries: { value: [] } }),
+}))
+
 const optimisticInfo = {
   title: 'Default',
   productTitle: 'Shirt',
