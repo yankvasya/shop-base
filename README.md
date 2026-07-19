@@ -240,6 +240,9 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
   ML-based `productRecommendations(productHandle:, intent: RELATED)` — a plain list,
   not paginated. Purely supplementary: a failed fetch or a product with no
   recommendations just means the section doesn't render, never an error on the page
+- Recently viewed products on the PDP — a client-side (`localStorage`) list of
+  visited product IDs, batch-fetched in a single request via the Storefront API's
+  generic `nodes(ids:)` field rather than one `product(handle:)` call per ID
 - Multi-currency (Shopify Markets): a currency switcher in the header sets a
   `@inContext(country:)` on every product/search/recommendations query, so prices
   and currency symbols reflect the selected market end to end. A cart's currency

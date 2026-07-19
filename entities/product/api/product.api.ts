@@ -17,6 +17,7 @@ import {
   PRODUCT_FILTER_OPTIONS_QUERY,
   PRODUCT_SEARCH_QUERY,
   PRODUCT_RECOMMENDATIONS_QUERY,
+  PRODUCT_NODES_QUERY,
 } from './queries'
 
 export interface GetProductsParams {
@@ -91,4 +92,22 @@ export async function getProductRecommendations(handle: string, country = 'US'):
   )
 
   return data.productRecommendations
+}
+
+/**
+ * Batch-fetches products by ID in a single request via Shopify's generic
+ * `nodes` field, instead of one `product(handle:)` round trip per ID.
+ * A stale ID (product deleted since it was viewed) comes back `null` —
+ * filtered out here so callers always get a clean list.
+ */
+export async function getProductsByIds(ids: string[], country = 'US'): Promise<ProductCard[]> {
+  if (ids.length === 0) return []
+
+  const data = await shopifyRequest(
+    PRODUCT_NODES_QUERY,
+    z.object({ nodes: z.array(productCardSchema.nullable()) }),
+    { ids, country },
+  )
+
+  return data.nodes.filter((node) => node !== null)
 }

@@ -43,7 +43,8 @@
     "selectOptions": "Select options",
     "quantity": "Quantity",
     "description": "Description",
-    "recommendations": "You may also like"
+    "recommendations": "You may also like",
+    "recentlyViewed": "Recently viewed"
   },
   "cart": {
     "title": "Your cart",
