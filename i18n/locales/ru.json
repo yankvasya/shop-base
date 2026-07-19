@@ -43,7 +43,8 @@
     "selectOptions": "Выберите вариант",
     "quantity": "Количество",
     "description": "Описание",
-    "recommendations": "Вам может понравиться"
+    "recommendations": "Вам может понравиться",
+    "recentlyViewed": "Вы недавно смотрели"
   },
   "cart": {
     "title": "Корзина",

@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { getProductByHandle } from '@entities/product'
 import { useMarket } from '@entities/market'
 import { AddToCartForm } from '@features/add-to-cart'
+import { RecentlyViewed, useRecentlyViewed } from '@features/recently-viewed'
 import { Skeleton } from '@shared/ui/skeleton'
 
 const route = useRoute()
 const handle = computed(() => route.params.handle as string)
 const { country } = useMarket()
+const { record } = useRecentlyViewed()
 
 const {
   data: product,
@@ -19,6 +21,14 @@ const {
   {
     watch: [handle, country],
   },
+)
+
+watch(
+  product,
+  (value) => {
+    if (value) record(value.id)
+  },
+  { immediate: true },
 )
 
 if (!pending.value && !error.value && !product.value) {
@@ -127,5 +137,6 @@ useHead(() => ({
     </div>
 
     <ProductRecommendations v-if="product" :handle="product.handle" />
+    <RecentlyViewed v-if="product" :exclude-id="product.id" />
   </div>
 </template>

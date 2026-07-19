@@ -163,3 +163,19 @@ export const PRODUCT_RECOMMENDATIONS_QUERY = /* GraphQL */ `
     }
   }
 `
+
+// Shopify's generic `nodes` field batch-fetches by global ID in one request
+// — the efficient alternative to N separate `product(handle:)` calls, used
+// here for "recently viewed" (a client-side list of IDs with no natural
+// single query of their own). A stale ID (its product was deleted since
+// being viewed) comes back as `null` rather than erroring the whole batch.
+export const PRODUCT_NODES_QUERY = /* GraphQL */ `
+  ${PRODUCT_CARD_FRAGMENT}
+  query ProductNodes($ids: [ID!]!, $country: CountryCode!) @inContext(country: $country) {
+    nodes(ids: $ids) {
+      ... on Product {
+        ...ProductCard
+      }
+    }
+  }
+`
