@@ -4,12 +4,25 @@ A headless e-commerce storefront built on **Nuxt 4** against the **Shopify Store
 portfolio/demo project — the architecture and patterns here are meant to be a realistic starting point for a real
 Shopify headless build, not a toy.
 
+**Live demo:** [shop-base-nu.vercel.app](https://shop-base-nu.vercel.app)
+
+## Highlights
+
+- Full commerce flow: catalog with filters/sort, PDP, cart with optimistic UI, discount codes, Shopify-hosted checkout
+- Multi-currency (Shopify Markets) and i18n (English/Russian), both driving real Storefront API `@inContext` queries
+- Customer login and order history via the Customer Account API (OAuth 2.0 + PKCE)
+- Product recommendations and recently-viewed, via two of the Storefront API's less commonly used fields
+- SEO (sitemap, structured data, hreflang), a CI pipeline, and a Playwright E2E suite that runs against the live store
+- Every feature was verified against real Shopify data, not just built and assumed — see individual PRs for the real
+  bugs that surfaced this way and how they were fixed
+
 ## Stack
 
 - **Nuxt 4** / Vue 3 (Composition API, `<script setup>`), TypeScript strict mode
 - **Pinia** — cart state, persisted client-side
 - **VueUse** — `useStorage` for cart persistence, etc.
-- **shadcn-vue + Tailwind CSS v4** — UI kit, used as-is (vendored into `shared/ui`)
+- **shadcn-vue + Tailwind CSS v4** — UI kit, vendored into `shared/ui` with a minimal
+  mono theme on top (Inter, a single indigo accent)
 - **Zod** — runtime validation of every Storefront API response, form/URL input parsing
 - **@shopify/storefront-api-client** — GraphQL client for the Storefront API
 - **@graphql-codegen** — generates TypeScript types from the live Storefront API schema
@@ -118,7 +131,8 @@ Deployed as a standard Nuxt SSR app — no framework-specific glue code needed. 
    sets the right build command/output — no `vercel.json` or nitro preset override needed.
 2. In the project's **Environment Variables** settings, add the same three variables from
    `.env.example` (`NUXT_PUBLIC_SHOPIFY_STORE_DOMAIN`, `NUXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN`,
-   `NUXT_PUBLIC_SHOPIFY_API_VERSION`).
+   `NUXT_PUBLIC_SHOPIFY_API_VERSION`). Customer login/order history needs three more —
+   see "Customer accounts" below.
 3. Deploy. `@nuxt/image`'s `cdn.shopify.com` domain allowlist (`nuxt.config.ts` → `image.domains`)
    already covers Shopify-hosted product images.
 
@@ -167,11 +181,12 @@ the Customer Account API's GraphQL endpoint (also discovered, from
 through `server/api/account/*` routes.
 
 **Caveat:** the OAuth mechanics (discovery, PKCE, token exchange/refresh, session
-handling) are implemented against Shopify's documented endpoint behavior, but the
-`Customer`/`Order`/`LineItem` field selections in `entities/customer` and
-`entities/order` haven't been exercised against a live store yet — that needs the
-setup above done first. Expect the same kind of small fixes we hit getting the
-Storefront API right (wrong field name, unsupported argument) on the first real login.
+handling) are verified live end to end — including catching and fixing two real bugs
+along the way (Shopify only offering a public/PKCE client here, and an env var naming
+mismatch that silently sent an empty `client_id`). What's still unverified is the
+`Order`/`LineItem` field selections in `entities/order`: this dev store has no real
+purchase history to log in and view, so that query path hasn't actually run against
+live data yet.
 
 ## E2E tests (Playwright)
 
@@ -260,17 +275,18 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
   boundary before it reaches application code
 - Loading/error states on every async call (catalog, PDP, search)
 - Tests: `entities/product` (Zod schemas, variant selection), `entities/cart`
-  (Pinia store — optimistic add, rollback on failure, quantity/remove), the
-  `add-to-cart` feature composable, and the filter query-string builder
+  (Pinia store — optimistic add/rollback, quantity/remove, discount code
+  apply/remove), the `add-to-cart` feature composable, the `recently-viewed`
+  tracking composable, and the filter query-string builder
 - E2E smoke tests (Playwright) against a real dev server — see "E2E tests" above
 
 ## Not yet implemented
 
-- shadcn-vue components were installed as-is (unstyled beyond the default theme) —
-  visual customization is a follow-up
 - Customer profile editing / address book (read-only profile + order history only)
-- Order detail lookup (`order(id:)`) is unverified against the live schema — see the
-  "Customer accounts" caveat above
+- The `Order`/`LineItem` field selections in `entities/order` are implemented against
+  Shopify's documented schema but not yet exercised against a real order — this dev
+  store has no purchase history to log in and view. Login itself (PKCE OAuth flow end
+  to end) is verified live.
 
 ## Known environment quirk
 
