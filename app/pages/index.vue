@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { getProducts, type ProductCard } from '@entities/product'
+import { useMarket } from '@entities/market'
 import { useProductSort, SortSelect } from '@features/product-sort'
 import { useProductFilter, ProductFilters } from '@features/product-filter'
 
@@ -9,6 +10,7 @@ useSeoMeta({ title: () => t('catalog.title'), description: () => t('seo.catalogD
 
 const { sortParams } = useProductSort()
 const { filterQuery } = useProductFilter()
+const { country } = useMarket()
 
 const products = ref<ProductCard[]>([])
 const endCursor = ref<string | null>(null)
@@ -20,6 +22,7 @@ const queryParams = computed(() => ({
   sortKey: sortParams.value.sortKey,
   reverse: sortParams.value.reverse,
   query: filterQuery.value,
+  country: country.value,
 }))
 
 const { data, pending, error, refresh } = await useAsyncData(

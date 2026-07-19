@@ -73,7 +73,7 @@ export const CART_QUERY = /* GraphQL */ `
 
 export const CART_CREATE_MUTATION = /* GraphQL */ `
   ${CART_FRAGMENT}
-  mutation CartCreate($lines: [CartLineInput!]) {
+  mutation CartCreate($lines: [CartLineInput!], $country: CountryCode!) @inContext(country: $country) {
     cartCreate(input: { lines: $lines }) {
       cart {
         ...CartFragment

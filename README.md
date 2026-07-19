@@ -240,6 +240,13 @@ secrets: `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`,
   ML-based `productRecommendations(productHandle:, intent: RELATED)` — a plain list,
   not paginated. Purely supplementary: a failed fetch or a product with no
   recommendations just means the section doesn't render, never an error on the page
+- Multi-currency (Shopify Markets): a currency switcher in the header sets a
+  `@inContext(country:)` on every product/search/recommendations query, so prices
+  and currency symbols reflect the selected market end to end. A cart's currency
+  is fixed at creation (`@inContext` only needed on `cartCreate`, verified live —
+  a cart re-queried later with no context at all still reports the currency it was
+  created in), so switching markets doesn't change an existing cart's prices, only
+  new ones. Selection persists in a cookie (`entities/market`, shared by SSR and CSR)
 - Customer login (Customer Account API, OAuth 2.0) and order history at `/account` —
   see the "Customer accounts" section above for setup and its current caveat
 - i18n: English + Russian (`i18n/locales/`), locale-prefixed routes

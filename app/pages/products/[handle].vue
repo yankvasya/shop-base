@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { getProductByHandle } from '@entities/product'
+import { useMarket } from '@entities/market'
 import { AddToCartForm } from '@features/add-to-cart'
 import { Skeleton } from '@shared/ui/skeleton'
 
 const route = useRoute()
 const handle = computed(() => route.params.handle as string)
+const { country } = useMarket()
 
 const {
   data: product,
   pending,
   error,
 } = await useAsyncData(
-  () => `product-${handle.value}`,
-  () => getProductByHandle(handle.value),
+  () => `product-${handle.value}-${country.value}`,
+  () => getProductByHandle(handle.value, country.value),
   {
-    watch: [handle],
+    watch: [handle, country],
   },
 )
 

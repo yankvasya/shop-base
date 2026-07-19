@@ -40,9 +40,14 @@ export async function getCart(id: string): Promise<Cart | null> {
   return data.cart
 }
 
-export async function createCart(lines: CartLineInput[] = []): Promise<Cart> {
+// The market a cart is created in fixes its currency for its whole
+// lifetime (verified live: re-querying a cart later with no @inContext at
+// all still returns the currency it was created with) — later lines/
+// mutations on the same cart don't need @inContext again.
+export async function createCart(lines: CartLineInput[] = [], country = 'US'): Promise<Cart> {
   const data = await shopifyRequest(CART_CREATE_MUTATION, z.object({ cartCreate: cartPayloadSchema() }), {
     lines,
+    country,
   })
   return unwrapCartPayload(data.cartCreate, 'Failed to create cart')
 }

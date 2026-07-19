@@ -10,6 +10,9 @@
     "search": "Поиск",
     "cart": "Корзина"
   },
+  "market": {
+    "selectCurrency": "Выбрать валюту"
+  },
   "catalog": {
     "title": "Каталог",
     "sortBy": "Сортировка",

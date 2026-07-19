@@ -35,7 +35,8 @@ export const PRODUCT_LIST_QUERY = /* GraphQL */ `
     $sortKey: ProductSortKeys
     $reverse: Boolean
     $query: String
-  ) {
+    $country: CountryCode!
+  ) @inContext(country: $country) {
     products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, query: $query) {
       edges {
         cursor
@@ -54,7 +55,7 @@ export const PRODUCT_LIST_QUERY = /* GraphQL */ `
 `
 
 export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
-  query ProductByHandle($handle: String!) {
+  query ProductByHandle($handle: String!, $country: CountryCode!) @inContext(country: $country) {
     product(handle: $handle) {
       id
       handle
@@ -130,7 +131,8 @@ export const PRODUCT_FILTER_OPTIONS_QUERY = /* GraphQL */ `
 
 export const PRODUCT_SEARCH_QUERY = /* GraphQL */ `
   ${PRODUCT_CARD_FRAGMENT}
-  query ProductSearch($query: String!, $first: Int, $after: String) {
+  query ProductSearch($query: String!, $first: Int, $after: String, $country: CountryCode!)
+  @inContext(country: $country) {
     search(query: $query, first: $first, after: $after, types: [PRODUCT]) {
       edges {
         cursor
@@ -154,7 +156,8 @@ export const PRODUCT_SEARCH_QUERY = /* GraphQL */ `
 // Relay connection — no pagination, no edges/pageInfo to unwrap.
 export const PRODUCT_RECOMMENDATIONS_QUERY = /* GraphQL */ `
   ${PRODUCT_CARD_FRAGMENT}
-  query ProductRecommendations($productHandle: String!) {
+  query ProductRecommendations($productHandle: String!, $country: CountryCode!)
+  @inContext(country: $country) {
     productRecommendations(productHandle: $productHandle, intent: RELATED) {
       ...ProductCard
     }

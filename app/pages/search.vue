@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { searchProducts } from '@entities/product'
+import { useMarket } from '@entities/market'
 
 const { t } = useI18n()
 useSeoMeta({ title: () => t('nav.search'), description: () => t('seo.searchDescription') })
 
 const route = useRoute()
 const query = computed(() => (typeof route.query.q === 'string' ? route.query.q : ''))
+const { country } = useMarket()
 
 const { data, pending, error, refresh } = await useAsyncData(
-  () => `search-${query.value}`,
-  () => (query.value ? searchProducts({ query: query.value, first: 12 }) : null),
-  { watch: [query] },
+  () => `search-${query.value}-${country.value}`,
+  () => (query.value ? searchProducts({ query: query.value, first: 12, country: country.value }) : null),
+  { watch: [query, country] },
 )
 
 const products = computed(() => data.value?.nodes ?? [])

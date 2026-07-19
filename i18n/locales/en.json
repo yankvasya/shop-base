@@ -10,6 +10,9 @@
     "search": "Search",
     "cart": "Cart"
   },
+  "market": {
+    "selectCurrency": "Select currency"
+  },
   "catalog": {
     "title": "Catalog",
     "sortBy": "Sort by",
