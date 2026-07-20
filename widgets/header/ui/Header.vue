@@ -6,6 +6,7 @@ import { MarketSwitcher } from '@features/market-switcher'
 
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
+const localePath = useLocalePath()
 
 const availableLocales = computed(() =>
   (typeof locales.value === 'string' ? [] : locales.value).filter((l) => l.code !== locale.value),
@@ -15,10 +16,12 @@ const availableLocales = computed(() =>
 <template>
   <header class="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
     <div class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3.5">
-      <NuxtLink to="/" class="text-lg font-semibold tracking-tight">ShopBase</NuxtLink>
+      <NuxtLink :to="localePath('/')" class="text-lg font-semibold tracking-tight">ShopBase</NuxtLink>
 
       <nav class="flex items-center gap-4 text-sm text-muted-foreground">
-        <NuxtLink to="/" class="transition-colors hover:text-foreground">{{ $t('nav.catalog') }}</NuxtLink>
+        <NuxtLink :to="localePath('/')" class="transition-colors hover:text-foreground">{{
+          $t('nav.catalog')
+        }}</NuxtLink>
       </nav>
 
       <div class="ml-auto flex items-center gap-2">

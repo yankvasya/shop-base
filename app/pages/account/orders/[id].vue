@@ -6,6 +6,7 @@ import { formatMoney } from '@shared/lib'
 definePageMeta({ middleware: 'auth' })
 
 useSeoMeta({ robots: 'noindex, nofollow' })
+const localePath = useLocalePath()
 
 const route = useRoute()
 // route.params.id is already decoded by vue-router (real slashes in the
@@ -24,7 +25,10 @@ const {
 
 <template>
   <div class="mx-auto max-w-2xl px-4 py-6">
-    <NuxtLink to="/account/orders" class="mb-4 inline-block text-sm text-muted-foreground hover:underline">
+    <NuxtLink
+      :to="localePath('/account/orders')"
+      class="mb-4 inline-block text-sm text-muted-foreground hover:underline"
+    >
       ← {{ $t('account.backToOrders') }}
     </NuxtLink>
 

@@ -5,6 +5,7 @@ definePageMeta({ middleware: 'auth' })
 
 const { t } = useI18n()
 useSeoMeta({ title: () => t('account.myAccount'), robots: 'noindex, nofollow' })
+const localePath = useLocalePath()
 
 const { data: profile, pending, error } = await useFetch('/api/account/profile', { key: 'account-profile' })
 </script>
@@ -20,7 +21,7 @@ const { data: profile, pending, error } = await useFetch('/api/account/profile',
       <p v-if="profile.emailAddress" class="text-muted-foreground">{{ profile.emailAddress }}</p>
     </div>
 
-    <NuxtLink to="/account/orders" class="mt-6 inline-block text-primary hover:underline">
+    <NuxtLink :to="localePath('/account/orders')" class="mt-6 inline-block text-primary hover:underline">
       {{ $t('account.orders') }} →
     </NuxtLink>
   </div>

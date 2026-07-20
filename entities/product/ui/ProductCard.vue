@@ -4,10 +4,11 @@ import { formatMoney } from '@shared/lib'
 import type { ProductCard as ProductCardModel } from '../model/schema'
 
 defineProps<{ product: ProductCardModel }>()
+const localePath = useLocalePath()
 </script>
 
 <template>
-  <NuxtLink :to="`/products/${product.handle}`" class="group block">
+  <NuxtLink :to="localePath(`/products/${product.handle}`)" class="group block">
     <div class="relative aspect-square overflow-hidden rounded-lg bg-muted">
       <NuxtImg
         v-if="product.images[0]"
