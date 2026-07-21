@@ -4,12 +4,13 @@ import { useAuth } from '../model/use-auth'
 
 const { isLoggedIn, login, logout } = useAuth()
 const { t } = useI18n()
+const localePath = useLocalePath()
 </script>
 
 <template>
   <div class="flex items-center gap-2 text-sm">
     <template v-if="isLoggedIn">
-      <NuxtLink to="/account" class="hover:underline">{{ t('account.myAccount') }}</NuxtLink>
+      <NuxtLink :to="localePath('/account')" class="hover:underline">{{ t('account.myAccount') }}</NuxtLink>
       <Button variant="ghost" size="sm" @click="logout">{{ t('account.logout') }}</Button>
     </template>
     <Button v-else variant="ghost" size="sm" @click="() => login()">{{ t('account.login') }}</Button>

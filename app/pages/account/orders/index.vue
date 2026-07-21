@@ -6,6 +6,7 @@ definePageMeta({ middleware: 'auth' })
 
 const { t, locale } = useI18n()
 useSeoMeta({ title: () => t('account.orders'), robots: 'noindex, nofollow' })
+const localePath = useLocalePath()
 
 const { data, pending, error } = await useFetch('/api/account/orders', { key: 'account-orders' })
 
@@ -35,7 +36,7 @@ function formatDate(iso: string) {
         <div class="text-right">
           <p class="font-semibold">{{ formatMoney(order.totalPrice) }}</p>
           <NuxtLink
-            :to="`/account/orders/${encodeURIComponent(order.id)}`"
+            :to="localePath(`/account/orders/${encodeURIComponent(order.id)}`)"
             class="text-sm text-primary hover:underline"
           >
             {{ $t('account.viewOrder') }}
